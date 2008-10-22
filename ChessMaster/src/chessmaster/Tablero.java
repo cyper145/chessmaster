@@ -1,6 +1,7 @@
 package chessmaster;
 
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,6 +64,9 @@ public class Tablero implements Cloneable {
 
             }
         }
+    }
+
+    private Tablero() {
     }
 
     public int getNivel() {
@@ -233,8 +237,8 @@ public class Tablero implements Cloneable {
 
                 }
                 valor = valor * (-1);
-                posAux.fila =pos.fila + (valor);
-                posAux.columna= pos.columna + (valor);
+                posAux.fila = pos.fila + (valor);
+                posAux.columna = pos.columna + (valor);
             }
             return false;
         } else {
@@ -316,7 +320,7 @@ public class Tablero implements Cloneable {
                             posAux.columna = posAux.columna + (valor);
                             if (posAux.esValida()) {
                                 if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                    // Borramos ficha comida y movemos la ficha comedora.
+                                    // Borramos ficha comida y movemos la ficha movedora.
                                     Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)];
                                     this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
 
@@ -353,7 +357,7 @@ public class Tablero implements Cloneable {
                             posAux.columna = posAux.columna - (valor);
                             if (posAux.esValida()) {
                                 if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                    // Borramos ficha comida y movemos la ficha comedora.
+                                    // Borramos ficha comida y movemos la ficha movedora.
                                     Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)];
                                     this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
 
@@ -374,8 +378,8 @@ public class Tablero implements Cloneable {
 
                     }
                     valor = valor * (-1);
-                    posAux.fila =pos.fila + (valor);
-                    posAux.columna= pos.columna + (valor);
+                    posAux.fila = pos.fila + (valor);
+                    posAux.columna = pos.columna + (valor);
                 }
 
             } else {
@@ -389,7 +393,7 @@ public class Tablero implements Cloneable {
                         posAux.columna = posAux.columna + (valor);
                         if (posAux.esValida()) {
                             if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                // Borramos ficha comida y movemos la ficha comedora.
+                                // Borramos ficha comida y movemos la ficha movedora.
                                 Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)];
                                 this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
 
@@ -424,7 +428,7 @@ public class Tablero implements Cloneable {
                         posAux.columna = posAux.columna - (valor);
                         if (posAux.esValida()) {
                             if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                // Borramos ficha comida y movemos la ficha comedora.
+                                // Borramos ficha comida y movemos la ficha movedora.
                                 Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)];
                                 this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
 
@@ -462,19 +466,19 @@ public class Tablero implements Cloneable {
         this.Fichas = val;
     }
 
-    public Ficha[][] clonarFichas()
-    {
-        Ficha[][] clones= new Ficha [8][8];
+    public Ficha[][] clonarFichas() {
+        Ficha[][] clones = new Ficha[8][8];
         for (int i = 0; i < Fichas.length; i++) {
             for (int j = 0; j < Fichas.length; j++) {
-                if(this.Fichas[i][j]!= null)
-                    clones[i][j]  = (Ficha) this.Fichas[i][j].clone();
-                
+                if (this.Fichas[i][j] != null) {
+                    clones[i][j] = (Ficha) this.Fichas[i][j].clone();
+                }
             }
-            
+
         }
         return clones;
     }
+
     public String toString() {
         String cadena = "";
         for (int i = 0; i < Fichas.length; i++) {
@@ -527,5 +531,112 @@ public class Tablero implements Cloneable {
             System.out.println(" no se puede duplicar");
         }
         return obj;
+    }
+
+    public Vector MoverFicha(Ficha movedora) {
+        Vector sucesores = new Vector();
+        Posicion pos = movedora.getPos();
+        int valor = 0;
+        if (this.TurnoBlancas) {
+            valor = 1;
+        } else {
+            valor = -1;            //Ver si se puede comer a la derecha.
+        }
+        Posicion posAux = new Posicion(pos.fila + (valor), pos.columna + (valor));
+        if (movedora.isDama()) {
+            for (int i = 0; i < 2; i++) {
+                if (posAux.esValida()) {
+                    //Vemos si la casilla esta vacia.
+                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                            // Borramos ficha comida y movemos la ficha movedora.                               
+                            this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                            movedora.mover(posAux);
+                            this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                            //Guardar estado.   
+                            Tablero table = new Tablero();
+                            table.setFichas(this.clonarFichas());
+                            sucesores.add(table);
+
+                        }
+                        posAux.fila = posAux.fila + (valor);
+                        posAux.columna = posAux.columna + (valor);
+                    }
+
+                }
+                movedora.mover(pos);
+                this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                this.Fichas[posAux.fila-(valor)][posAux.columna-(valor)] = null;
+                //Ver si se puede comer a la izquierda.
+                posAux.fila = pos.fila + (valor);
+                posAux.columna = pos.columna - (valor);
+                if (posAux.esValida()) {
+                    //Vemos si la casilla esta vacia.
+                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                            // Borramos ficha comida y movemos la ficha movedora.                               
+                            this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                            movedora.mover(posAux);
+                            this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                            //Guardar estado.   
+                            Tablero table = new Tablero();
+                            table.setFichas(this.clonarFichas());
+                            sucesores.add(table);
+
+                        }
+                        posAux.fila = posAux.fila + (valor);
+                        posAux.columna = posAux.columna - (valor);
+                    }
+                }
+                movedora.mover(pos);
+                this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                this.Fichas[posAux.fila-(valor)][posAux.columna+(valor)] = null;
+                valor = valor * (-1);
+                posAux.fila = pos.fila + (valor);
+                posAux.columna = pos.columna + (valor);
+            }
+
+        } else {
+
+            if (posAux.esValida()) {
+                //Vemos si la casilla esta vacia.                    
+                if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                    // Borramos ficha comida y movemos la ficha movedora.                               
+                    this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                    movedora.mover(posAux);
+                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    //Guardar estado.   
+                    Tablero table = new Tablero();
+                    table.setFichas(this.clonarFichas());
+                    sucesores.add(table);
+
+                    movedora.mover(pos);
+                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    this.Fichas[posAux.fila][posAux.columna] = null;
+                }
+            }
+            //Ver si se puede mover a la izquierda.
+            posAux.fila = pos.fila + (valor);
+            posAux.columna = pos.columna - (valor);
+            if (posAux.esValida()) {
+                //Vemos si la casilla esta vacia.
+                if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                    // Borramos ficha comida y movemos la ficha movedora.                               
+                    this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                    movedora.mover(posAux);
+                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    //Guardar estado.   
+                    Tablero table = new Tablero();
+                    table.setFichas(this.clonarFichas());
+                    sucesores.add(table);
+
+                    movedora.mover(pos);
+                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    this.Fichas[posAux.fila][posAux.columna] = null;
+                }
+            }
+
+        }
+        return sucesores;
     }
 }

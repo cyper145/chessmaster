@@ -6,6 +6,7 @@
 package chessmaster;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 
 
@@ -26,16 +27,20 @@ public class Main {
                            { 1, 0 , 0 , 0, 0, 0, 0, 0},//2
                            { 0,-1 , 0 , 1, 0, 1, 0, 0},//3
                            { 0, 0 , 0 , 0, 0, 0, 2, 0},//4
-                           { 0,-2 , 0 ,-1, 0, 1, 0, 0},//5
+                           { 0,-2 , 0 ,-1, 0, 0, 0, 0},//5
                            { 0, 0 ,-1 , 0, 0, 0,-1, 0},//6
                            { 0,-1 , 0 ,-1,-1, 0, 0,-1}};//7
                            
         Tablero table= new Tablero(tablero);
-        table.setTurnoBlancas(false);
+        table.setTurnoBlancas(true);
         System.out.println(table.toString());
-        table.ComerMayorCant(table.getFicha(6, 6), 0);
-        System.out.println(table.estadoPiezasComidas.toString());
-        System.out.println(table.cantidadPiezasComidas);
+        Vector resultado = table.MoverFicha(table.getFicha(4, 6));
+        Tablero tabla = null;
+        for (int i = 0; i < resultado.size(); i++) {
+            tabla = (Tablero)resultado.get(i);
+            System.out.println("\n"+tabla.toString()+"\n");
+            
+        }
         
        // System.out.println(table.CalcularValorDeEstado());
         //Posicion p= new Posicion(3,5);
