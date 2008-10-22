@@ -1,5 +1,8 @@
 package chessmaster;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  *Una dama se diferencia del peon en los lugares que se puede mover. 
@@ -26,15 +29,13 @@ public class Peon extends Ficha {
         if(!pos.esValida())
             return false;
         else
-        {
-            Posicion p1= this.getPos();
-            
+        {          
             this.setPos(pos);
             return true;
         }
         
     }
-
+    
    /**
      *    Retorna true, si la ficha this, puede comer a la ficha mandada como 
      *    parametro.

@@ -2,7 +2,7 @@ package chessmaster;
 
 
 
-public abstract class Ficha {
+public abstract class Ficha implements Cloneable{
 
 
     private Posicion pos;
@@ -28,7 +28,17 @@ public abstract class Ficha {
     public void setPos (Posicion val) {
         this.pos = val;
     }
-
+       
+    public Object clone() {
+        Object obj = null;
+        try {
+            obj = super.clone();
+        } catch (CloneNotSupportedException ex) {
+            System.out.println(" no se puede duplicar");
+        }
+        return obj;
+    }
+    
     public boolean isDama() {
         return Dama;
     }

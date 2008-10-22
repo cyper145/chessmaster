@@ -16,7 +16,13 @@ public class Dama extends Ficha {
      * si se le exige al peon saltar mas de una casilla.
      */
     public boolean mover (Posicion pos) {
-        return true;
+        if(!pos.esValida())
+            return false;
+        else
+        {            
+            this.setPos(pos);
+            return true;
+        }
     }
 
     /**

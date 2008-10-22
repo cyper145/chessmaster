@@ -15,7 +15,11 @@ public class Posicion {
     }
 
     
-    
+    public void setPos(Posicion p)
+    {
+        this.fila=p.fila;
+        this.columna=p.columna;
+    }
 
     public boolean esIgualA (Posicion p) {
        
