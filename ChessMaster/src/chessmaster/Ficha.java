@@ -5,7 +5,8 @@ package chessmaster;
 public class Ficha implements Cloneable{
 
 
-    private Posicion pos;
+    private Posicion posActual;
+    private Posicion posAnterior;
 
     /**
      *Guarda True en el caso que sea una ficha blanca. Y false, en el caso que 
@@ -16,21 +17,29 @@ public class Ficha implements Cloneable{
     private boolean Dama=false;
    
     public Ficha (Posicion val) {
-        this.pos=val;
+        this.posActual=val;
+        this.posAnterior=this.posActual;
     }
-
+    
    
     public Posicion getPos () {
-        //Posicion p= new Posicion(pos.fila, pos.columna);
-        return pos;
+        //Posicion p= new Posicion(posActual.fila, posActual.columna);
+        return posActual;
     }
 
  
     public void setPos (Posicion val) {
-       //this.pos.fila = val.fila;
-       //this.pos.columna=val.columna;
-        this.pos=val;
+        
+        this.posActual=val;
        
+    }
+
+    public Posicion getPosAnterior() {
+        return posAnterior;
+    }
+
+    public void actualizarPosVieja() {
+        this.posAnterior = this.posActual.clone();
     }
        
     public Object clone() {
@@ -76,8 +85,12 @@ public class Ficha implements Cloneable{
     {
         Posicion peo= f.getPos();
         
-//        return (this.pos.esIgualA(peo) && this.esFichaBlanca== f.esFichaBlanca);
-        return ( this.esFichaBlanca== f.esFichaBlanca);
+        return (this.posActual.esIgualA(peo) && this.esFichaBlanca== f.esFichaBlanca);
+    }
+    
+    public String toString()
+    {
+        return this.posActual.toString();
     }
     
 

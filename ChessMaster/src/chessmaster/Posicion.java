@@ -69,6 +69,11 @@ public class Posicion {
         return p;
     }
     
+    public String toString()
+    {
+        return "( "+this.fila+","+this.columna+" )";
+    }
+    
 
 }
 

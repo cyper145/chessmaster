@@ -24,9 +24,10 @@ public class Tablero implements Cloneable {
     private Vector<Tablero> Sucesores= new Vector();
     public static int cantidadPiezasComidas = 0;
     public static Vector estadoPiezasComidas = new Vector();
+    public Vector VectorDeComidas= new Vector();
     private Ficha[][] Fichas;
     private int[][] Tabla;
-
+    public Ficha fichaMovida;// Es la ficha que se movio.
     public Tablero(int[][] matTabla) {
         Fichas = new Ficha[8][8];
         this.Tabla = matTabla;
@@ -114,10 +115,13 @@ public class Tablero implements Cloneable {
                     if(f1.esFichaBlanca==this.Turno)
                     {
                         //Sucesores generados
+                        f1.actualizarPosVieja();
                         estadosMovidas= this.MoverFicha(f1);
                         // Sucesores generados por comer piezas
                         this.estadoPiezasComidas.clear();//Limpio el vector estatico.
-                        this.ComerMayorCant(f1, 0);
+                        f1.actualizarPosVieja();
+                        if(this.puedeComer(f1))
+                            this.ComerMayorCant(f1, 0, new Vector());
                         
                         // Agregamos los estados generados en el vector sucesores.
                         for (int k = 0; k < estadosMovidas.size(); k++) {
@@ -331,18 +335,25 @@ public class Tablero implements Cloneable {
      * @param cantidad Cantidad de piezas que se ha comido.
      */
     @SuppressWarnings("static-access")
-    public void ComerMayorCant(Ficha comedora, int cantidad) {
-
+    public void ComerMayorCant(Ficha comedora, int cantidad, Vector <Ficha> fichasComidas) {
+        
         if (!this.puedeComer(comedora)) {
             Tablero t=new Tablero();
             t.setFichas(this.clonarFichas());
             if (cantidad > this.cantidadPiezasComidas) {
                 this.cantidadPiezasComidas = cantidad;
                 this.estadoPiezasComidas.clear();
+                t.VectorDeComidas = (Vector) fichasComidas.clone();
+                
+                t.fichaMovida=(Ficha)comedora.clone();
                 this.estadoPiezasComidas.add(t);
             }
             else if(cantidad !=0 && cantidad == this.cantidadPiezasComidas && !this.EsRepetidoComido(t))
-                  this.estadoPiezasComidas.add(t);
+            {
+                t.VectorDeComidas = (Vector) fichasComidas.clone();
+                t.fichaMovida=(Ficha)comedora.clone();
+                this.estadoPiezasComidas.add(t);
+            }     
             
         } else {
             Posicion pos = comedora.getPos();
@@ -376,8 +387,10 @@ public class Tablero implements Cloneable {
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
                                     comedora.mover(posAux.clone());
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-
-                                    this.ComerMayorCant(comedora, cantidad + 1);
+                                    
+                                    fichasComidas.add(comida);
+                                    this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                    fichasComidas.remove(fichasComidas.size()-1);
 
                                     //Desasemos lo que hicimos.
                                     this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = comida;
@@ -414,7 +427,9 @@ public class Tablero implements Cloneable {
                                     comedora.mover(posAux.clone());
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
-                                    this.ComerMayorCant(comedora, cantidad + 1);
+                                    fichasComidas.add(comida);
+                                    this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                    fichasComidas.remove(fichasComidas.size()-1);
 
                                     //Desasemos lo que hicimos.
                                     this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = comida;
@@ -450,7 +465,9 @@ public class Tablero implements Cloneable {
                                 comedora.mover(posAux.clone());
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
-                                this.ComerMayorCant(comedora, cantidad + 1);
+                                fichasComidas.add(comida);
+                                this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                fichasComidas.remove(fichasComidas.size()-1);
 
                                 //Desasemos lo que hicimos.
                                 this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = comida;
@@ -485,7 +502,9 @@ public class Tablero implements Cloneable {
                                 comedora.mover(posAux.clone());
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
-                                this.ComerMayorCant(comedora, cantidad + 1);
+                                fichasComidas.add(comida);
+                                this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                fichasComidas.remove(fichasComidas.size()-1);
 
                                 //Desasemos lo que hicimos.
                                 this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = comida;
@@ -625,6 +644,7 @@ public class Tablero implements Cloneable {
                             //Guardar estado.   
                             Tablero table = new Tablero();
                             table.setFichas(this.clonarFichas());
+                            table.fichaMovida=movedora;
                             sucesores.add(table);
 
                         }
@@ -649,6 +669,7 @@ public class Tablero implements Cloneable {
                             this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
                             //Guardar estado.   
                             Tablero table = new Tablero();
+                            table.fichaMovida=movedora;
                             table.setFichas(this.clonarFichas());
                             sucesores.add(table);
 
@@ -677,6 +698,7 @@ public class Tablero implements Cloneable {
                     //Guardar estado.   
                     Tablero table = new Tablero();
                     table.setFichas(this.clonarFichas());
+                    table.fichaMovida=movedora;
                     sucesores.add(table);
 
                     movedora.mover(pos);
@@ -697,6 +719,7 @@ public class Tablero implements Cloneable {
                     //Guardar estado.   
                     Tablero table = new Tablero();
                     table.setFichas(this.clonarFichas());
+                    table.fichaMovida=movedora;
                     sucesores.add(table);
 
                     movedora.mover(pos);

@@ -44,7 +44,13 @@ public class Main {
         for (int i = 0; i < resultado.size(); i++) {
             tabla = (Tablero)resultado.get(i);
             System.out.println("\n"+tabla.toString()+"\n");
-            
+            for (int j = 0; j < tabla.VectorDeComidas.size(); j++) {
+                Ficha f1=(Ficha)tabla.VectorDeComidas.get(j);
+                System.out.print(f1.toString()+",\n");
+                
+            }
+            System.out.println(tabla.fichaMovida.getPosAnterior().toString());
+                
         }
         System.out.println(resultado.size());
        // System.out.println(table.CalcularValorDeEstado());
