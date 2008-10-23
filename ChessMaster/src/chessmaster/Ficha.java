@@ -2,7 +2,7 @@ package chessmaster;
 
 
 
-public abstract class Ficha implements Cloneable{
+public class Ficha implements Cloneable{
 
 
     private Posicion pos;
@@ -52,22 +52,22 @@ public abstract class Ficha implements Cloneable{
     }
     
     
-    /**
-     *  <html>
-     *    <head>
-     *  
-     *    </head>
-     *    <body>
-     *      <p style="margin-top: 0">
-     *        Mueve al peon a la posicion recibida como parametro. Retorna false, si 
-     *        el movimiento no se puede realizar. Un movimiento no se podra realizar 
-     *        si se le exige al peon saltar mas de una casilla.
-     *      </p>
-     *    </body>
-     *  </html>
-     */
+   
   
-    public abstract boolean mover (Posicion pos);
+     /**
+     * Mueve al peon a la posicion recibida como parametro. Retorna false, si 
+     * el movimiento no se puede realizar. Un movimiento no se podra realizar 
+     * si se le exige al peon saltar mas de una casilla.
+     */
+    public boolean mover (Posicion pos) {
+        if(!pos.esValida())
+            return false;
+        else
+        {            
+            this.setPos(pos);
+            return true;
+        }
+    }
 
 
     
@@ -80,24 +80,6 @@ public abstract class Ficha implements Cloneable{
         return ( this.esFichaBlanca== f.esFichaBlanca);
     }
     
-
-   
-
-    /**
-     *  <html>
-     *    <head>
-     *  
-     *    </head>
-     *    <body>
-     *      <p style="margin-top: 0">
-     *        Retorna true, si la ficha this, puede comer a la ficha mandada como 
-     *        parametro.
-     *      </p>
-     *    </body>
-     *  </html>
-     */
-   
-    public abstract boolean puedeComer (Ficha f1);
 
 }
 

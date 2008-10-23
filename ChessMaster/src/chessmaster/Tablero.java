@@ -35,25 +35,25 @@ public class Tablero implements Cloneable {
                 //Si es positivo es Max, sino Min.
                 if (((i + j) % 2) == 0) {
                     if (matTabla[i][j] > 0) {
-                        Ficha peo;
                         Posicion p = new Posicion(i, j);
+                        Ficha peo=new Ficha(p);
                         //Si es 1 es peon, sino es Dama
                         if (matTabla[i][j] == 1) {
-                            peo = new Peon(p);
+                            peo.setDama(false);
                         } else {
-                            peo = new Dama(p);
+                            peo.setDama(true);
                         }
                         peo.esFichaBlanca = true;
                         Fichas[i][j] = peo;
                     } else if (matTabla[i][j] < 0) {
                         //Las fichas Min son negativas
-                        Ficha peo;
                         Posicion p = new Posicion(i, j);
+                        Ficha peo=new Ficha(p);
                         //Si es -1 es peon, sino es Dama
                         if (matTabla[i][j] == -1) {
-                            peo = new Peon(p);
+                            peo.setDama(false);
                         } else {
-                            peo = new Dama(p);
+                            peo.setDama(true);
                         }
                         peo.esFichaBlanca = false;
                         Fichas[i][j] = peo;
@@ -341,7 +341,7 @@ public class Tablero implements Cloneable {
                 this.estadoPiezasComidas.clear();
                 this.estadoPiezasComidas.add(t);
             }
-            else if(cantidad == this.cantidadPiezasComidas && !this.EsRepetidoComido(t))
+            else if(cantidad !=0 && cantidad == this.cantidadPiezasComidas && !this.EsRepetidoComido(t))
                   this.estadoPiezasComidas.add(t);
             
         } else {
@@ -620,7 +620,7 @@ public class Tablero implements Cloneable {
                         if (this.Fichas[posAux.fila][posAux.columna] == null) {
                             // Borramos ficha comida y movemos la ficha movedora.                               
                             this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
-                            movedora.mover(posAux);
+                            movedora.mover(posAux.clone());
                             this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
                             //Guardar estado.   
                             Tablero table = new Tablero();
@@ -645,7 +645,7 @@ public class Tablero implements Cloneable {
                         if (this.Fichas[posAux.fila][posAux.columna] == null) {
                             // Borramos ficha comida y movemos la ficha movedora.                               
                             this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
-                            movedora.mover(posAux);
+                            movedora.mover(posAux.clone());
                             this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
                             //Guardar estado.   
                             Tablero table = new Tablero();
@@ -672,7 +672,7 @@ public class Tablero implements Cloneable {
                 if (this.Fichas[posAux.fila][posAux.columna] == null) {
                     // Borramos ficha comida y movemos la ficha movedora.                               
                     this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
-                    movedora.mover(posAux);
+                    movedora.mover(posAux.clone());
                     this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
                     //Guardar estado.   
                     Tablero table = new Tablero();
@@ -692,7 +692,7 @@ public class Tablero implements Cloneable {
                 if (this.Fichas[posAux.fila][posAux.columna] == null) {
                     // Borramos ficha comida y movemos la ficha movedora.                               
                     this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
-                    movedora.mover(posAux);
+                    movedora.mover(posAux.clone());
                     this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
                     //Guardar estado.   
                     Tablero table = new Tablero();
