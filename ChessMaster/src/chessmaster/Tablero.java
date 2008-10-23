@@ -11,7 +11,7 @@ public class Tablero implements Cloneable {
      * Indica el turno a quien le toca jugar. Si el turno es de las blancas, el valor 
      * es true, si el turno es de las negras, el valor es false.
      */
-    private boolean Turno = true;
+    private boolean Turno;
     /**
      * Como las instancias de esta clase van a ser los nodos de un arbol, esta 
      * variable indica el nivel en que se encuentra el nodo.
@@ -89,7 +89,31 @@ public class Tablero implements Cloneable {
      * @return una Matriz de enteros que representa un estado.
      */
     public int[][] getTablero() {
-        return this.Tabla.clone();
+        int [][] tabla = new int[8][8];        
+        for (int i = 0; i < this.Fichas.length; i++) {
+            for (int j = 0; j < this.Fichas.length; j++) {
+                //Si es positivo es Max, sino Min.
+                if (((i + j) % 2) == 0 && Fichas[i][j] != null) {
+                    if (Fichas[i][j].esFichaBlanca) {                        
+                        //Si es 1 es peon, sino es Dama
+                        if (Fichas[i][j].isDama()) {
+                            tabla[i][j] = 2;
+                        } else {
+                            tabla[i][j] = 1;
+                        }                        
+                    }
+                    if (!Fichas[i][j].esFichaBlanca) {
+                        //Las fichas Min son negativas                        
+                        if (Fichas[i][j].isDama()) {
+                            tabla[i][j] = -2;
+                        } else {
+                            tabla[i][j] = -1;
+                        }
+                    }
+                }
+            }
+        }
+        return tabla;
     }
 
     public void setTurnoBlancas(boolean val) {
@@ -114,14 +138,16 @@ public class Tablero implements Cloneable {
                     //Si la ficha es del turno creamos los sucesores.
                     if(f1.esFichaBlanca==this.Turno)
                     {
-                        //Sucesores generados
-                        f1.actualizarPosVieja();
-                        estadosMovidas= this.MoverFicha(f1);
+                        
                         // Sucesores generados por comer piezas
                         this.estadoPiezasComidas.clear();//Limpio el vector estatico.
                         f1.actualizarPosVieja();
                         if(this.puedeComer(f1))
                             this.ComerMayorCant(f1, 0, new Vector());
+                        //Sucesores generados
+                        f1.actualizarPosVieja();
+                        estadosMovidas= this.MoverFicha(f1);
+                        
                         
                         // Agregamos los estados generados en el vector sucesores.
                         for (int k = 0; k < estadosMovidas.size(); k++) {
@@ -560,6 +586,7 @@ public class Tablero implements Cloneable {
             for (int j = 0; j < Fichas.length; j++) {
                 if (this.Fichas[i][j] != null) {
                     clones[i][j] = (Ficha) this.Fichas[i][j].clone();
+                    clones[i][j].setPos(this.Fichas[i][j].getPos().clone());
                 }
             }
 
@@ -730,5 +757,38 @@ public class Tablero implements Cloneable {
 
         }
         return sucesores;
+    }
+    public void coronarPeon() {
+
+        for (int j = 0; j < 8; j++) {
+            if ((j + 0) % 2 == 0) {
+                if (Fichas[0][j] != null && !Fichas[0][j].esFichaBlanca) {
+                    Fichas[0][j].setDama(true);
+                }
+            }
+            if ((j + 7) % 2 == 0) {
+                if (Fichas[7][j] != null && Fichas[7][j].esFichaBlanca) {
+                    Fichas[7][j].setDama(true);
+                }
+            }
+        }
+    }
+    
+    public int tieneFichasEnTablero() {
+        int con = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if ((j + i) % 2 == 0) {
+                    if (Fichas[i][j] != null && Fichas[i][j].esFichaBlanca == this.Turno) {
+                        con++;
+                    }
+                    if (Fichas[i][j] != null && Fichas[i][j].esFichaBlanca == this.Turno) {
+                        con++;
+                    }
+                }
+            }
+        }
+        return con;
+
     }
 }

@@ -8,8 +8,6 @@ package chessmaster;
 import java.util.ArrayList;
 import java.util.Vector;
 
-
-
 /**
  *
  * @author Ramon
@@ -21,38 +19,119 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+//                           0  1   2   3  4  5  6  7
+//        int tablero [][]=  {{1, 0 , 1 , 0, 1, 0, 1, 0},//0
+//                           { 0, 1 , 0 , 1, 0, 1, 0, 1},//1
+//                           { 1, 0 , 1 , 0, 1, 0, 1, 0},//2
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//3
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//4
+//                           { 0,-1 , 0 ,-1, 0,-1, 0,-1},//5
+//                           {-1, 0 ,-1 , 0,-1, 0,-1, 0},//6
+//                           { 0,-1 , 0 ,-1, 0,-1, 0,-1}};//7
+        
         //                   0  1   2   3  4  5  6  7
-        int tablero [][]=  {{1, 0 , 0 , 0, 1, 0, 0, 0},//0
+        int tablero [][]=  {{1, 0 , 0 , 0, 0, 0, 0, 0},//0
                            { 0, 1 , 0 , 1, 0, 1, 0, 1},//1
-                           { 1, 0 , 1 , 0, 0, 0, 1, 0},//2
-                           { 0, 0 , 0 , 1, 0, 0, 0, 0},//3
-                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//4
-                           { 0,-2 , 0 ,-1, 0, 0, 0, 0},//5
-                           { 0, 0 ,-1 , 0, 0, 0,-1, 0},//6
-                           { 0,-1 , 0 ,-1, 0, 0, 0,-1}};//7
-                           
+                           {-1, 0 ,-1 , 0,-1, 0,-1, 0},//2
+                           { 0,-1 , 0 ,-1, 0, 0, 0, 0},//3
+                           { 0, 0 , 0 , 0, 1, 0, 1, 0},//4
+                           { 0, 1 , 0 , 1, 0,-1, 0,-1},//5
+                           {-1, 0 ,-1 , 0, 0, 0, 0, 0},//6
+                           { 0, 0 , 0 , 2, 0, 0, 0, 2}};//7
+        
+//        //                   0  1   2   3  4  5  6  7
+//        int tablero [][]=  {{0, 0 , 0 , 0, 0, 0, 0, 0},//0
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//1
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//2
+//                           { 0,-2 , 0 , 0, 0, 0, 0, 0},//3
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//4
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//5
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 0},//6
+//                           { 0, 0 , 0 , 0, 0, 0, 0, 2}};//7
+        
+        
         Tablero table= new Tablero(tablero);
-        table.setTurnoBlancas(false);
         System.out.println(table.toString());
         System.out.println("------------------------------------------------------");
         
+        Aleatorio jugador1 = new Aleatorio();
+        Aleatorio jugador2 = new Aleatorio();
+        Tablero jugada = null;
+        
+        long fin = System.currentTimeMillis() + 150000;
+        while(System.currentTimeMillis() <= fin){            
+            table.setTurnoBlancas(true);
+            if(table.tieneFichasEnTablero() != 0){
+                Tablero aux = new Tablero(tablero);
+                aux.setTurnoBlancas(true);
+                jugada = jugador1.jugar(aux);
+                if(jugada == null){
+                    System.out.println(" 1 Ha ganado el Jugador con fichas negras");
+                    break;
+                }
+            }else{
+                System.out.println(" 2 Ha ganado el Jugador con fichas negras");
+                break;
+            }
+            //actualizar el tablero original...
+            jugada.coronarPeon();
+            tablero = jugada.getTablero();            
+            table.setFichas(jugada.clonarFichas());
+            if(table.getTurnoBlancas())
+                System.out.println("Juega blancas");
+            else
+                System.out.println("Juega negras");
+            jugada = null;
+            
+            System.out.println(table.toString());
+            table.setTurnoBlancas(false);
+                        
+            if(table.tieneFichasEnTablero() != 0){
+                Tablero aux = new Tablero(tablero);
+                aux.setTurnoBlancas(false);
+                jugada = jugador2.jugar(aux);
+                if(jugada == null){
+                    System.out.println(" 3 Ha ganado el Jugador con fichas blancas");
+                    break;
+                }
+            }else{
+                System.out.println(" 4 Ha ganado el Jugador con fichas blancas");
+                break;
+            }
+            jugada.coronarPeon();
+            tablero = jugada.getTablero();
+            table.setFichas(jugada.clonarFichas());
+            if(table.getTurnoBlancas())
+                System.out.println("Juega blancas");
+            else
+                System.out.println("Juega negras");
+            jugada = null;
+            System.out.println(table.toString());
+        }
+        
         
 //        table.ComerMayorCant(table.getFicha(4, 4),0);
-        table.GenerarSucesores();
-        Vector resultado = table.getSucesores();
-        Tablero tabla = null;
-        for (int i = 0; i < resultado.size(); i++) {
-            tabla = (Tablero)resultado.get(i);
-            System.out.println("\n"+tabla.toString()+"\n");
-            for (int j = 0; j < tabla.VectorDeComidas.size(); j++) {
-                Ficha f1=(Ficha)tabla.VectorDeComidas.get(j);
-                System.out.print(f1.toString()+",\n");
-                
-            }
-            System.out.println(tabla.fichaMovida.getPosAnterior().toString());
-                
-        }
-        System.out.println(resultado.size());
+//        table.setTurnoBlancas(false);
+//        table.GenerarSucesores();
+//        Vector resultado = table.getSucesores();
+//        Tablero tabla = null;
+//        for (int i = 0; i < resultado.size(); i++) {
+//            tabla = (Tablero)resultado.get(i);
+//            System.out.println("\n"+tabla.toString()+"\n");
+//            for (int j = 0; j < tabla.VectorDeComidas.size(); j++) {
+//                Ficha f1=(Ficha)tabla.VectorDeComidas.get(j);
+//                System.out.print(f1.toString()+",\n");
+//                
+//            }
+//            System.out.println(tabla.fichaMovida.getPosAnterior().toString());
+//                
+//        }
+//        System.out.println(resultado.size());
+        
+        
+        
+        
+        
        // System.out.println(table.CalcularValorDeEstado());
         //Posicion p= new Posicion(3,5);
         //System.out.println(p.esValida());
