@@ -21,12 +21,16 @@ public abstract class Ficha implements Cloneable{
 
    
     public Posicion getPos () {
+        //Posicion p= new Posicion(pos.fila, pos.columna);
         return pos;
     }
 
  
     public void setPos (Posicion val) {
-        this.pos = val;
+       //this.pos.fila = val.fila;
+       //this.pos.columna=val.columna;
+        this.pos=val;
+       
     }
        
     public Object clone() {
@@ -71,7 +75,9 @@ public abstract class Ficha implements Cloneable{
     public boolean esIgualA(Ficha f)
     {
         Posicion peo= f.getPos();
-        return this.pos.esIgualA(peo);
+        
+//        return (this.pos.esIgualA(peo) && this.esFichaBlanca== f.esFichaBlanca);
+        return ( this.esFichaBlanca== f.esFichaBlanca);
     }
     
 

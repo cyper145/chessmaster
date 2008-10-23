@@ -63,6 +63,11 @@ public class Posicion {
         
         
     }
+    public Posicion clone()
+    {
+        Posicion p= new Posicion(this.fila, this.columna);
+        return p;
+    }
     
 
 }

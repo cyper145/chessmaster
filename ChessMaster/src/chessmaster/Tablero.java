@@ -11,7 +11,7 @@ public class Tablero implements Cloneable {
      * Indica el turno a quien le toca jugar. Si el turno es de las blancas, el valor 
      * es true, si el turno es de las negras, el valor es false.
      */
-    private boolean TurnoBlancas = true;
+    private boolean Turno = true;
     /**
      * Como las instancias de esta clase van a ser los nodos de un arbol, esta 
      * variable indica el nivel en que se encuentra el nodo.
@@ -21,9 +21,9 @@ public class Tablero implements Cloneable {
      * Es un vector de sucesores. Que indica todos los hijos que tiene este 
      * nodo.
      */
-    private ArrayList<Tablero> Sucesores;
+    private Vector<Tablero> Sucesores= new Vector();
     public static int cantidadPiezasComidas = 0;
-    public static Tablero estadoPiezasComidas = null;
+    public static Vector estadoPiezasComidas = new Vector();
     private Ficha[][] Fichas;
     private int[][] Tabla;
 
@@ -78,7 +78,7 @@ public class Tablero implements Cloneable {
     }
 
     public boolean getTurnoBlancas() {
-        return this.TurnoBlancas;
+        return this.Turno;
     }
 
     /**
@@ -92,7 +92,7 @@ public class Tablero implements Cloneable {
     }
 
     public void setTurnoBlancas(boolean val) {
-        this.TurnoBlancas = val;
+        this.Turno = val;
     }
 
     /**
@@ -101,15 +101,52 @@ public class Tablero implements Cloneable {
      * si es que no se pueden generar nuevos sucesores.
      *
      */
-    public boolean GenerarSucesores() {
-        return true;
+    public void GenerarSucesores() 
+    {
+        for (int i = 0; i < Fichas.length; i++) {
+            for (int j = 0; j < Fichas.length; j++) {
+                if((i+j)%2==0 && this.Fichas[i][j]!=null)
+                {
+                    Ficha f1=this.Fichas[i][j];
+                    Vector estadosMovidas;
+                    
+                    //Si la ficha es del turno creamos los sucesores.
+                    if(f1.esFichaBlanca==this.Turno)
+                    {
+                        //Sucesores generados
+                        estadosMovidas= this.MoverFicha(f1);
+                        // Sucesores generados por comer piezas
+                        this.estadoPiezasComidas.clear();//Limpio el vector estatico.
+                        this.ComerMayorCant(f1, 0);
+                        
+                        // Agregamos los estados generados en el vector sucesores.
+                        for (int k = 0; k < estadosMovidas.size(); k++) {
+                            Tablero t1 = (Tablero)estadosMovidas.get(k);
+                            this.Sucesores.add(t1);
+                            
+                        }
+                        
+                        //Si hay algo de piezas comidas, lo agrego como sucesores.
+                            for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
+                                Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
+                                this.Sucesores.add(t1);
+                            }
+                            
+                    }
+                        
+                }
+                
+            }
+            
+        }
+        
     }
 
-    public ArrayList<Tablero> getSucesores() {
+    public Vector<Tablero> getSucesores() {
         return Sucesores;
     }
 
-    public void setSucesores(ArrayList<Tablero> val) {
+    public void setSucesores(Vector<Tablero> val) {
         this.Sucesores = val;
     }
 
@@ -131,7 +168,7 @@ public class Tablero implements Cloneable {
                     Ficha f1 = this.Fichas[i][j];
 
                     //Todas las fichas del que le toca jugar 
-                    if (f1.esFichaBlanca == this.TurnoBlancas) {
+                    if (f1.esFichaBlanca == this.Turno) {
                         int valorPiesa;
                         Posicion pos1 = f1.getPos();
 
@@ -167,14 +204,20 @@ public class Tablero implements Cloneable {
         return this.Nivel == nivel;
     }
 
+    
     /**
-     * Come todas las fichas del adversario que puede comer la Ficha pasada 
-     * como parametro. Retorna true si existen mas fichas para comer o false si 
-     * es que ya no existen fichas para comer.
+     * Verifica si el estado t2 ya existe dentro del vector de estados de piezas comedoras.
+     * @param t2 Estado a comparar.
+     * @return True si ya es un estado repetido, y false en caso contrario.
      */
-    public boolean ComerUnaFicha(Ficha comedora) {
-
-        return true;
+    public boolean EsRepetidoComido(Tablero t2)
+    {
+        for (int i = 0; i < this.estadoPiezasComidas.size(); i++) {
+            Tablero t1= (Tablero)this.estadoPiezasComidas.get(i);
+            if(t2.esIgualA(t1))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -185,7 +228,7 @@ public class Tablero implements Cloneable {
 
         Posicion pos = comedora.getPos();
         int valor = 0;
-        if (this.TurnoBlancas) {
+        if (this.Turno) {
             valor = 1;
         } else {
             valor = -1;        //Ver si se puede comer a la derecha.
@@ -282,23 +325,29 @@ public class Tablero implements Cloneable {
     }
 
     /**
-     * 
-     * @return La cantidad de fichas que ha comido.
+     * Guarda en un vector estatico todos los estados que tengan la mayor cantidad de piezas comidas.
+     * No existen estados repetidos.
+     * @param comedora Pieza que queremos que coma piezas.
+     * @param cantidad Cantidad de piezas que se ha comido.
      */
     @SuppressWarnings("static-access")
     public void ComerMayorCant(Ficha comedora, int cantidad) {
 
         if (!this.puedeComer(comedora)) {
+            Tablero t=new Tablero();
+            t.setFichas(this.clonarFichas());
             if (cantidad > this.cantidadPiezasComidas) {
                 this.cantidadPiezasComidas = cantidad;
-                //Posible problema futuro.
-                this.estadoPiezasComidas = (Tablero) this.clone();
-                this.estadoPiezasComidas.setFichas(this.clonarFichas());
+                this.estadoPiezasComidas.clear();
+                this.estadoPiezasComidas.add(t);
             }
+            else if(cantidad == this.cantidadPiezasComidas && !this.EsRepetidoComido(t))
+                  this.estadoPiezasComidas.add(t);
+            
         } else {
             Posicion pos = comedora.getPos();
             int valor = 0;
-            if (this.TurnoBlancas) {
+            if (this.Turno) {
                 valor = 1;
             } else {
                 valor = -1;            //Ver si se puede comer a la derecha.
@@ -325,7 +374,7 @@ public class Tablero implements Cloneable {
                                     this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
 
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                    comedora.mover(posAux);
+                                    comedora.mover(posAux.clone());
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
                                     this.ComerMayorCant(comedora, cantidad + 1);
@@ -362,7 +411,7 @@ public class Tablero implements Cloneable {
                                     this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
 
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                    comedora.mover(posAux);
+                                    comedora.mover(posAux.clone());
                                     this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
                                     this.ComerMayorCant(comedora, cantidad + 1);
@@ -398,7 +447,7 @@ public class Tablero implements Cloneable {
                                 this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
 
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                comedora.mover(posAux);
+                                comedora.mover(posAux.clone());
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
                                 this.ComerMayorCant(comedora, cantidad + 1);
@@ -433,7 +482,7 @@ public class Tablero implements Cloneable {
                                 this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
 
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                comedora.mover(posAux);
+                                comedora.mover(posAux.clone());
                                 this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
 
                                 this.ComerMayorCant(comedora, cantidad + 1);
@@ -462,6 +511,26 @@ public class Tablero implements Cloneable {
         return Fichas[i][j];
     }
 
+    public boolean esIgualA(Tablero t)
+    {
+        for (int i = 0; i < Fichas.length; i++) {
+            for (int j = 0; j < Fichas.length; j++) {
+                if((i+j)%2==0 )
+                {
+                    if(this.Fichas[i][j]!=null && t.Fichas[i][j]!=null
+                         && !this.Fichas[i][j].esIgualA(t.Fichas[i][j]))
+                         return false;
+                    else if(this.Fichas[i][j]!=null && t.Fichas[i][j]==null ||
+                            this.Fichas[i][j]==null && t.Fichas[i][j]!=null)
+                        return false;
+                }
+                
+                    
+            }
+            
+        }
+        return true;
+    }
     public void setFichas(Ficha[][] val) {
         this.Fichas = val;
     }
@@ -537,7 +606,7 @@ public class Tablero implements Cloneable {
         Vector sucesores = new Vector();
         Posicion pos = movedora.getPos();
         int valor = 0;
-        if (this.TurnoBlancas) {
+        if (this.Turno) {
             valor = 1;
         } else {
             valor = -1;            //Ver si se puede comer a la derecha.

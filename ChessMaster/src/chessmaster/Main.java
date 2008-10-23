@@ -23,10 +23,10 @@ public class Main {
         // TODO code application logic here
         //                   0  1   2   3  4  5  6  7
         int tablero [][]=  {{0, 0 , 1 , 0, 0, 0, 1, 0},//0
-                           { 0, 0 , 0 , 1, 0, 1, 0, 1},//1
+                           { 0, 1 , 0 , 1, 0, 1, 0, 1},//1
                            { 1, 0 , 0 , 0, 0, 0, 0, 0},//2
                            { 0,-1 , 0 , 1, 0, 1, 0, 0},//3
-                           { 0, 0 , 0 , 0, 0, 0, 2, 0},//4
+                           { 0, 0 , 0 , 0,-2, 0, 2, 0},//4
                            { 0,-2 , 0 ,-1, 0, 0, 0, 0},//5
                            { 0, 0 ,-1 , 0, 0, 0,-1, 0},//6
                            { 0,-1 , 0 ,-1,-1, 0, 0,-1}};//7
@@ -34,7 +34,12 @@ public class Main {
         Tablero table= new Tablero(tablero);
         table.setTurnoBlancas(true);
         System.out.println(table.toString());
-        Vector resultado = table.MoverFicha(table.getFicha(4, 6));
+        System.out.println("------------------------------------------------------");
+        
+        
+//        table.ComerMayorCant(table.getFicha(4, 4),0);
+        table.GenerarSucesores();
+        Vector resultado = table.getSucesores();
         Tablero tabla = null;
         for (int i = 0; i < resultado.size(); i++) {
             tabla = (Tablero)resultado.get(i);
