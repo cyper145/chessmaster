@@ -7,6 +7,9 @@ public class Ficha implements Cloneable{
 
     private Posicion posActual;
     private Posicion posAnterior;
+    private int ColorFicha=-1;
+
+   
 
     /**
      *Guarda True en el caso que sea una ficha blanca. Y false, en el caso que 
@@ -20,8 +23,24 @@ public class Ficha implements Cloneable{
         this.posActual=val;
         this.posAnterior=this.posActual;
     }
+
     
-   
+     public void setColorFicha(int ColorFicha) {
+        this.ColorFicha = ColorFicha;
+        if(Math.abs(ColorFicha)==2)
+            this.Dama=true;
+        if(ColorFicha<0)
+            this.esFichaBlanca=false;
+         else
+            this.esFichaBlanca=true;
+        
+            
+    }
+
+    public int getColorFicha() {
+        return ColorFicha;
+    }
+    
     public Posicion getPos () {
         //Posicion p= new Posicion(posActual.fila, posActual.columna);
         return posActual;
@@ -58,6 +77,7 @@ public class Ficha implements Cloneable{
 
     public void setDama(boolean Dama) {
         this.Dama = Dama;
+        this.ColorFicha=this.ColorFicha*2;
     }
     
     

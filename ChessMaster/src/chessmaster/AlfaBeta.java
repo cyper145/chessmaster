@@ -5,7 +5,8 @@ import java.util.Vector;
 
 
 public class AlfaBeta extends IEstrategia {
-
+    
+    
     private int nivelMaximo;
     public AlfaBeta (int nivelMax) {
         this.nivelMaximo=nivelMax;
@@ -14,7 +15,7 @@ public class AlfaBeta extends IEstrategia {
 
     public Tablero jugar (Tablero actual) 
     {
-        
+        this.numNodos=0;
         Tablero t=null;
         double v=this.ValorMax(actual);
         Vector sucesores=actual.getSucesores(v);//Trae los sucesores que tiene un puntaje "v"
@@ -27,19 +28,26 @@ public class AlfaBeta extends IEstrategia {
         return t;
     }
 
+    public  int getNumNodos() {
+        int n=numNodos;
+        return n;
+    }
 
+    
     private double ValorMin (Tablero estado) 
     {
+        this.numNodos++;
         if(this.testTerminal(estado))
         {
             estado.CalcularValorDeEstado();
             return estado.puntaje;
         }
         double valor= Double.POSITIVE_INFINITY;
-        estado.GenerarSucesores(true);
+        estado.GenerarSucesores();
         Vector sucesores= estado.getSucesores();
         for (int i = 0; i < sucesores.size(); i++) {
             Tablero s= (Tablero)sucesores.get(i);
+            s.setTurnoBlancas(!estado.getTurnoBlancas());
             valor= Math.min(valor, this.ValorMax(s));
             
             if(valor < estado.alfa || valor == estado.alfa )
@@ -57,16 +65,18 @@ public class AlfaBeta extends IEstrategia {
 
     private double ValorMax (Tablero estado) 
     {
+        this.numNodos++;
         if(this.testTerminal(estado))
         {
             estado.CalcularValorDeEstado();
             return estado.puntaje;
         }
         double valor= Double.NEGATIVE_INFINITY;
-        estado.GenerarSucesores(false);
+        estado.GenerarSucesores();
         Vector sucesores= estado.getSucesores();
         for (int i = 0; i < sucesores.size(); i++) {
             Tablero s= (Tablero)sucesores.get(i);
+            s.setTurnoBlancas(!estado.getTurnoBlancas());
             valor= Math.max(valor, this.ValorMin(s));
             
             if(valor > estado.beta || valor == estado.beta )

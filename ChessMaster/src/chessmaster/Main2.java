@@ -28,15 +28,23 @@ public class Main2 {
                            { 0, 0 , 0 , 1, 0, 0, 0, 0},//3
                            { 0, 0 ,-2 , 0, 0, 0, 0, 0},//4
                            { 0, 0 , 0 ,-1, 0, 0, 0, 0},//5
-                           { 0, 0 ,-1 , 0, 0, 0,-1, 0},//6
+                           { 0, 0 , 0 , 0, 0, 0,-1, 0},//6
                            { 0,-1 , 0 ,-1, 0, 0, 0,-1}};//7
                            
         Tablero table= new Tablero(tablero);
         table.setTurnoBlancas(false);
-        IEstrategia jugador2 = new AlfaBeta(4);
-        Tablero table2=jugador2.jugar(table);
+//        IEstrategia jugador2 = new AlfaBeta(7);
+        IEstrategia jugador1 = new MaxMin(3);
+//        Tablero table2=jugador2.jugar(table);
         System.out.println(table.toString());
-        System.out.println(table2.toString());
+//        System.out.println("Jugada Alfa Beta");
+//        System.out.println(table2.toString());
+//        System.out.println("Cantidad de nodos AlfaBeta="+jugador2.);
+        System.out.println("Jugada MaxMin");
+        Tablero table1=jugador1.jugar(table);
+        System.out.println(table1.toString());
+        System.out.println("Cantidad de nodos MaxMin="+jugador1.numNodos);
+        
         System.out.println("------------------------------------------------------");
         
         
@@ -47,7 +55,7 @@ public class Main2 {
 //        for (int i = 0; i < resultado.size(); i++) {
 //            tabla = (Tablero)resultado.get(i);
 //            tabla.CalcularValorDeEstado();
-//            System.out.println("El puntaje es:"+tabla.getPuntaje());
+//            System.out.println("El puntaje es:"+tabla.puntaje);
 //            System.out.println("\n"+tabla.toString()+"\n");
 //            for (int j = 0; j < tabla.VectorDeComidas.size(); j++) {
 //                Ficha f1=(Ficha)tabla.VectorDeComidas.get(j);
@@ -58,7 +66,7 @@ public class Main2 {
 //                
 //        }
 //        System.out.println(resultado.size());
-       // System.out.println(table.CalcularValorDeEstado());
+        
         //Posicion p= new Posicion(3,5);
         //System.out.println(p.esValida());
 //        Ficha[][] is = table.getFichas();
