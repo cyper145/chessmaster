@@ -33,13 +33,13 @@ public class Main2 {
                            
         Tablero table= new Tablero(tablero);
         table.setTurnoBlancas(false);
-//        IEstrategia jugador2 = new AlfaBeta(7);
+        IEstrategia jugador2 = new AlfaBeta(3);
         IEstrategia jugador1 = new MaxMin(3);
-//        Tablero table2=jugador2.jugar(table);
+        Tablero table2=jugador2.jugar(table);
         System.out.println(table.toString());
-//        System.out.println("Jugada Alfa Beta");
-//        System.out.println(table2.toString());
-//        System.out.println("Cantidad de nodos AlfaBeta="+jugador2.);
+        System.out.println("Jugada Alfa Beta");
+        System.out.println(table2.toString());
+        System.out.println("Cantidad de nodos AlfaBeta="+jugador2.numNodos);
         System.out.println("Jugada MaxMin");
         Tablero table1=jugador1.jugar(table);
         System.out.println(table1.toString());

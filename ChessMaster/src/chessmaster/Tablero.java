@@ -21,56 +21,19 @@ public class Tablero implements Cloneable {
      * Es un vector de sucesores. Que indica todos los hijos que tiene este 
      * nodo.
      */
-    private Vector<Tablero> Sucesores= new Vector();
+    private Vector Sucesores= new Vector();
     public static int cantidadPiezasComidas = 0;
     public static Vector estadoPiezasComidas = new Vector();
     public Vector VectorDeComidas= new Vector();
-    private Ficha[][] Fichas;
-    private int[][] Tabla;
+    public int[][] Tabla;
     public Ficha fichaMovida;// Es la ficha que se movio.
     public double puntaje=0;
     
     public double alfa= Double.NEGATIVE_INFINITY;
     public double beta= Double.POSITIVE_INFINITY;
     public Tablero(int[][] matTabla) {
-        Fichas = new Ficha[8][8];
-        this.Tabla = matTabla;
-        for (int i = 0; i < matTabla.length; i++) {
-            for (int j = 0; j < matTabla.length; j++) {
-                //Si es positivo es Max, sino Min.
-                if (((i + j) % 2) == 0) {
-                    if (matTabla[i][j] > 0) {
-                        Posicion p = new Posicion(i, j);
-                        Ficha peo=new Ficha(p);
-                        //Si es 1 es peon, sino es Dama
-                        if (matTabla[i][j] == 1) {
-                            peo.setDama(false);
-                        } else {
-                            peo.setDama(true);
-                        }
-                        peo.esFichaBlanca = true;
-                        Fichas[i][j] = peo;
-                       
-                    } else if (matTabla[i][j] < 0) {
-                        //Las fichas Min son negativas
-                        Posicion p = new Posicion(i, j);
-                        Ficha peo=new Ficha(p);
-                        //Si es -1 es peon, sino es Dama
-                        if (matTabla[i][j] == -1) {
-                            peo.setDama(false);
-                        } else {
-                            peo.setDama(true);
-                        }
-                        peo.esFichaBlanca = false;
-                        Fichas[i][j] = peo;
-                        
-                    }
-                }
-
-
-
-            }
-        }
+        
+        this.Tabla=matTabla;
     }
 
     private Tablero() {
@@ -95,40 +58,45 @@ public class Tablero implements Cloneable {
      * @return una Matriz de enteros que representa un estado.
      */
     public int[][] getTablero() {
-        int [][] tabla = new int[8][8];        
-        for (int i = 0; i < this.Fichas.length; i++) {
-            for (int j = 0; j < this.Fichas.length; j++) {
-                //Si es positivo es Max, sino Min.
-                if (((i + j) % 2) == 0 && Fichas[i][j] != null) {
-                    if (Fichas[i][j].esFichaBlanca) {                        
-                        //Si es 1 es peon, sino es Dama
-                        if (Fichas[i][j].isDama()) {
-                            tabla[i][j] = 2;
-                        } else {
-                            tabla[i][j] = 1;
-                        }                        
-                    }
-                    if (!Fichas[i][j].esFichaBlanca) {
-                        //Las fichas Min son negativas                        
-                        if (Fichas[i][j].isDama()) {
-                            tabla[i][j] = -2;
-                        } else {
-                            tabla[i][j] = -1;
-                        }
-                    }
-                }
-            }
-        }
-        return tabla;
+//        int [][] tabla = new int[8][8];        
+//        for (int i = 0; i < this.Fichas.length; i++) {
+//            for (int j = 0; j < this.Fichas.length; j++) {
+//                //Si es positivo es Max, sino Min.
+//                if (((i + j) % 2) == 0 && Fichas[i][j] != null) {
+//                    if (Fichas[i][j].esFichaBlanca) {                        
+//                        //Si es 1 es peon, sino es Dama
+//                        if (Fichas[i][j].isDama()) {
+//                            tabla[i][j] = 2;
+//                        } else {
+//                            tabla[i][j] = 1;
+//                        }                        
+//                    }
+//                    if (!Fichas[i][j].esFichaBlanca) {
+//                        //Las fichas Min son negativas                        
+//                        if (Fichas[i][j].isDama()) {
+//                            tabla[i][j] = -2;
+//                        } else {
+//                            tabla[i][j] = -1;
+//                        }
+//                    }
+//                }
+//            }
+            
+//        }
+        return this.Tabla;
     }
 
     public void setTurnoBlancas(boolean val) {
         this.Turno = val;
     }
-    public void GenerarSucesores()
+    public void GeneraradorAleatorio()
     {
         //Con false hacemos que primero coma si puede comer y luego se mueva si se puede mover.
         //Si era true, seria al reves.
+        this.GenerarSucesores(true);
+    }
+    public void GenerarSucesores()
+    {
         this.GenerarSucesores(false);
     }
 
@@ -138,67 +106,58 @@ public class Tablero implements Cloneable {
      * si es que no se pueden generar nuevos sucesores.
      *
      */
-    public void GenerarSucesores(boolean esMin) 
+    public void GenerarSucesores(boolean esAleatorio) 
     {
         int newLevel=this.Nivel+1;
-        for (int i = 0; i < Fichas.length; i++) {
-            for (int j = 0; j < Fichas.length; j++) {
-                if((i+j)%2==0 && this.Fichas[i][j]!=null)
+        boolean esUnaComedora=false;
+        for (int i = 0; i < this.Tabla.length; i++) {
+            for (int j = 0; j < this.Tabla.length; j++) {
+                if((i+j)%2==0 && this.Tabla[i][j]!=0)
                 {
-                    Ficha f1=this.Fichas[i][j];
+                    Ficha f1=new Ficha(new Posicion(i,j));
+                    f1.setColorFicha(this.Tabla[i][j]);
                     Vector estadosMovidas;
                     
                     //Si la ficha es del turno creamos los sucesores.
-                    if(f1.esFichaBlanca==this.Turno)
+                    if (f1.esFichaBlanca == this.Turno) 
                     {
-                        
-                        // Sucesores generados por comer piezas
-                        this.cantidadPiezasComidas=0;
-                        this.estadoPiezasComidas.clear();//Limpio el vector estatico.
-                        f1.actualizarPosVieja();
-                        if(this.puedeComer(f1))
-                            this.ComerMayorCant(f1, 0, new Vector());
-                        //Sucesores generados
-                        f1.actualizarPosVieja();
-                        estadosMovidas= this.MoverFicha(f1);
-                        
-                        if(esMin)
+                        int v = 0;
+                        if (esAleatorio) {
+                            v = (int) (Math.random() * 2);
+                        }
+                        if (v == 0) 
                         {
-                            // Agregamos los estados generados en el vector sucesores.
-                            for (int k = 0; k < estadosMovidas.size(); k++) {
-                                Tablero t1 = (Tablero)estadosMovidas.get(k);
-                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
-                                this.Sucesores.add(t1);
-                            
+                            // Sucesores generados por comer piezas
+                            this.cantidadPiezasComidas = 0;
+                            this.estadoPiezasComidas.clear();//Limpio el vector estatico.
+                            f1.actualizarPosVieja();
+                            if (this.puedeComer(f1)) {
+                                esUnaComedora = true;
+                                this.ComerMayorCant(f1, 0, new Vector());
+                                //Si hay algo de piezas comidas, lo agrego como sucesores.
+                                for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
+                                    Tablero t1 = (Tablero) this.estadoPiezasComidas.get(k);
+                                    t1.Nivel = newLevel;// Le digo al estado en que nivel esta.
+                                    this.Sucesores.add(t1);
+                                }
+                            } else if (!esUnaComedora) {
+                                //Sucesores generados
+                                f1.actualizarPosVieja();
+                                estadosMovidas = this.MoverFicha(f1);
+
+
+                                // Agregamos los estados generados en el vector sucesores.
+                                for (int k = 0; k < estadosMovidas.size(); k++) {
+                                    Tablero t1 = (Tablero) estadosMovidas.get(k);
+                                    t1.Nivel = newLevel;// Le digo al estado en que nivel esta.
+                                    this.Sucesores.add(t1);
+
+                                }
+
                             }
-                            //Si hay algo de piezas comidas, lo agrego como sucesores.
-                            for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
-                                Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
-                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
-                                this.Sucesores.add(t1);
-                            }
-                        }else{
-                            //Si hay algo de piezas comidas, lo agrego como sucesores.
-                            for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
-                                Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
-                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
-                                this.Sucesores.add(t1);
-                            }
-                            // Agregamos los estados generados en el vector sucesores.
-                            for (int k = 0; k < estadosMovidas.size(); k++) {
-                                Tablero t1 = (Tablero)estadosMovidas.get(k);
-                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
-                                this.Sucesores.add(t1);
-                            
-                            }
-                            
                         }
                         
-                        
-                        
-                        
-                       
-                            
+                      
                     }
                         
                 }
@@ -209,7 +168,7 @@ public class Tablero implements Cloneable {
         
     }
 
-    public Vector<Tablero> getSucesores() {
+    public Vector getSucesores() {
         return Sucesores;
     }
 
@@ -230,18 +189,18 @@ public class Tablero implements Cloneable {
 
         double sumaPonderada = 0;
        
-        for (int i = 0; i < this.Fichas.length; i++) {
-            for (int j = 0; j < this.Fichas.length; j++) {
+        for (int i = 0; i < this.Tabla.length; i++) {
+            for (int j = 0; j < this.Tabla.length; j++) {
 
-                if (((i + j) % 2) == 0 && this.Fichas[i][j]!=null) {
-                    Ficha f1 = this.Fichas[i][j];
+                if (((i + j) % 2) == 0 && this.Tabla[i][j]!=0) {
+                    
 
                     //Todas las fichas del que le toca jugar 
-                    if (f1.esFichaBlanca == this.Turno) {
+                    if ((this.Tabla[i][j]>0) == this.Turno) {
                         int valorPiesa;
-                        Posicion pos1 = f1.getPos();
+                        Posicion pos1 = new Posicion(i,j);
 
-                        if (f1.isDama()) {
+                        if (Math.abs(this.Tabla[i][j])==2) {
                             valorPiesa = 3;
                         } else {
                             valorPiesa = 1;
@@ -258,7 +217,7 @@ public class Tablero implements Cloneable {
 
         }
 
-        this.puntaje=this.cantidadPiezasComidas+sumaPonderada ;
+        this.puntaje=this.VectorDeComidas.size()*sumaPonderada + sumaPonderada;
     }
 
    
@@ -297,18 +256,19 @@ public class Tablero implements Cloneable {
             for (int i = 0; i < 2; i++) {
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                    while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna + (valor);
                     }
 
-                    if (posAux.esValida() && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                    if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
                         //Como no esta vacia, puede ser que tenemos algo para comer. 
                         //Vemos si hay casillas vacias contiguas a la pieza a comer.
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna + (valor);
                         if (posAux.esValida()) {
-                            if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                            if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                                 return true;
                             }
                         }
@@ -320,18 +280,19 @@ public class Tablero implements Cloneable {
                 posAux.columna = pos.columna - (valor);
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                    while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna - (valor);
                     }
 
-                    if (posAux.esValida() && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                    if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
                         //Como no esta vacia, tenemos algo por comer. 
                         //Vemos si hay casillas vacias contiguas a la pieza a comer.
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna - (valor);
                         if (posAux.esValida()) {
-                            if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                            if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                                 return true;
                             }
                         }
@@ -347,13 +308,14 @@ public class Tablero implements Cloneable {
 
             if (posAux.esValida()) {
                 //Vemos si la casilla esta vacia.
-                if (this.Fichas[posAux.fila][posAux.columna] != null && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
                     //Como no esta vacia, puede ser que tenemos algo para comer. 
                     //Vemos si hay casillas vacias contiguas a la pieza a comer.
                     posAux.fila = posAux.fila + (valor);
                     posAux.columna = posAux.columna + (valor);
                     if (posAux.esValida()) {
-                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                        if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                             return true;
                         }
                     }
@@ -365,13 +327,14 @@ public class Tablero implements Cloneable {
             posAux.columna = pos.columna - (valor);
             if (posAux.esValida()) {
                 //Vemos si la casilla esta vacia.
-                if (this.Fichas[posAux.fila][posAux.columna] != null && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
                     //Como no esta vacia, tenemos algo por comer. 
                     //Vemos si hay casillas vacias contiguas a la pieza a comer.
                     posAux.fila = posAux.fila + (valor);
                     posAux.columna = posAux.columna - (valor);
                     if (posAux.esValida()) {
-                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                        if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                             return true;
                         }
                     }
@@ -394,10 +357,12 @@ public class Tablero implements Cloneable {
         
         if (!this.puedeComer(comedora)) {
             Tablero t=new Tablero();
-            t.setFichas(this.clonarFichas());
+            t.Tabla=this.clonarTabla(this.Tabla);
             if (cantidad > this.cantidadPiezasComidas) {
                 this.cantidadPiezasComidas = cantidad;
+                
                 this.estadoPiezasComidas.clear();
+                t.cantidadPiezasComidas = cantidad;
                 t.VectorDeComidas = (Vector) fichasComidas.clone();
                 
                 t.fichaMovida=(Ficha)comedora.clone();
@@ -423,35 +388,43 @@ public class Tablero implements Cloneable {
                 for (int i = 0; i < 2; i++) {
                     if (posAux.esValida()) {
                         //Vemos si la casilla esta vacia.
-                        while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                        while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
                             posAux.fila = posAux.fila + (valor);
                             posAux.columna = posAux.columna + (valor);
                         }
 
-                        if (posAux.esValida() && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                        if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
                             //Como no esta vacia, puede ser que tenemos algo para comer. 
                             //Vemos si hay casillas vacias contiguas a la pieza a comer.
                             posAux.fila = posAux.fila + (valor);
                             posAux.columna = posAux.columna + (valor);
                             if (posAux.esValida()) {
-                                if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                    // Borramos ficha comida y movemos la ficha movedora.
-                                    Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)];
-                                    this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                                if (this.Tabla[posAux.fila][posAux.columna] == 0) {
+                                    //**** Borramos ficha comida y movemos la ficha movedora.*****
+                                    
+                                    //Guardamos la ficha comida.
+                                    int intFicha = this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)];
+                                    Ficha comida= new Ficha(new Posicion(posAux.fila - (valor),posAux.columna - (valor)));
+                                    comida.setColorFicha(intFicha);
+                                    
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = 0;
 
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
+                                    this.Tabla[pos.fila][pos.columna] = 0;
+                                    this.Tabla[posAux.fila][posAux.columna]=comedora.getColorFicha();
                                     comedora.mover(posAux.clone());
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
+                                    
+                                    this.Tabla[posAux.fila][posAux.columna] = comedora.getColorFicha();
                                     
                                     fichasComidas.add(comida);
                                     this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
                                     fichasComidas.remove(fichasComidas.size()-1);
 
                                     //Desasemos lo que hicimos.
-                                    this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = comida;
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = comida.getColorFicha();
                                     comedora.mover(pos);
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-                                    this.Fichas[posAux.fila][posAux.columna] = null;
+                                    this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                 }
                             }
                         }
@@ -461,40 +434,48 @@ public class Tablero implements Cloneable {
                     posAux.fila = pos.fila + (valor);
                     posAux.columna = pos.columna - (valor);
                     if (posAux.esValida()) {
-                        //Vemos si la casilla esta vacia.
-                        while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
+                        
+                        while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
                             posAux.fila = posAux.fila + (valor);
                             posAux.columna = posAux.columna - (valor);
                         }
 
-                        if (posAux.esValida() && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
-                            //Como no esta vacia, tenemos algo por comer. 
+                        if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)) {
+                            //Como no esta vacia, puede ser que tenemos algo para comer. 
                             //Vemos si hay casillas vacias contiguas a la pieza a comer.
                             posAux.fila = posAux.fila + (valor);
                             posAux.columna = posAux.columna - (valor);
-                            if (posAux.esValida()) {
-                                if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                    // Borramos ficha comida y movemos la ficha movedora.
-                                    Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)];
-                                    this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                            if (posAux.esValida()) 
+                            {
+                                if (this.Tabla[posAux.fila][posAux.columna] == 0) {
+                                    //**** Borramos ficha comida y movemos la ficha movedora.*****
+                                    
+                                    //Guardamos la ficha comida.
+                                    int intFicha = this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)];
+                                    Ficha comida= new Ficha(new Posicion(posAux.fila - (valor),posAux.columna + (valor)));
+                                    comida.setColorFicha(intFicha);
+                                    
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = 0;
 
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
+                                    this.Tabla[pos.fila][pos.columna] = 0;
+                                    this.Tabla[posAux.fila][posAux.columna]=comedora.getColorFicha();
                                     comedora.mover(posAux.clone());
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-
+                                    
+                                    this.Tabla[posAux.fila][posAux.columna] = comedora.getColorFicha();
+                                    
                                     fichasComidas.add(comida);
                                     this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
                                     fichasComidas.remove(fichasComidas.size()-1);
 
                                     //Desasemos lo que hicimos.
-                                    this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = comida;
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = comida.getColorFicha();
                                     comedora.mover(pos);
-                                    this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-                                    this.Fichas[posAux.fila][posAux.columna] = null;
+                                    this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                 }
                             }
                         }
-
                     }
                     valor = valor * (-1);
                     posAux.fila = pos.fila + (valor);
@@ -505,33 +486,42 @@ public class Tablero implements Cloneable {
 
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    if (this.Fichas[posAux.fila][posAux.columna] != null && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
+                     if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0))
+                    {
                         //Como no esta vacia, puede ser que tenemos algo para comer. 
                         //Vemos si hay casillas vacias contiguas a la pieza a comer.
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna + (valor);
                         if (posAux.esValida()) {
-                            if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                // Borramos ficha comida y movemos la ficha movedora.
-                                Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)];
-                                this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                            if (this.Tabla[posAux.fila][posAux.columna] == 0) {
+                                    //**** Borramos ficha comida y movemos la ficha movedora.*****
+                                    
+                                    //Guardamos la ficha comida.
+                                    int intFicha = this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)];
+                                    Ficha comida= new Ficha(new Posicion(posAux.fila - (valor),posAux.columna - (valor)));
+                                    comida.setColorFicha(intFicha);
+                                    
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = 0;
 
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                comedora.mover(posAux.clone());
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
+                                    this.Tabla[pos.fila][pos.columna] = 0;
+                                    this.Tabla[posAux.fila][posAux.columna]=comedora.getColorFicha();
+                                    comedora.mover(posAux.clone());
+                                    
+                                    this.Tabla[posAux.fila][posAux.columna] = comedora.getColorFicha();
+                                    
+                                    fichasComidas.add(comida);
+                                    this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                    fichasComidas.remove(fichasComidas.size()-1);
 
-                                fichasComidas.add(comida);
-                                this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
-                                fichasComidas.remove(fichasComidas.size()-1);
-
-                                //Desasemos lo que hicimos.
-                                this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = comida;
-                                comedora.mover(pos);
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-                                this.Fichas[posAux.fila][posAux.columna] = null;
-
-
-                            }
+                                    //Desasemos lo que hicimos.
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = comida.getColorFicha();
+                                    comedora.mover(pos);
+                                    this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                }
+                        
+                        
 
                         }
                     }
@@ -542,33 +532,41 @@ public class Tablero implements Cloneable {
                 posAux.columna = pos.columna - (valor);
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    if (this.Fichas[posAux.fila][posAux.columna] != null && comedora.esFichaBlanca != this.Fichas[posAux.fila][posAux.columna].esFichaBlanca) {
-                        //Como no esta vacia, tenemos algo por comer. 
-                        //Vemos si hay casillas vacias contiguas a la pieza a comer.
-                        posAux.fila = posAux.fila + (valor);
-                        posAux.columna = posAux.columna - (valor);
-                        if (posAux.esValida()) {
-                            if (this.Fichas[posAux.fila][posAux.columna] == null) {
-                                // Borramos ficha comida y movemos la ficha movedora.
-                                Ficha comida = this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)];
-                                this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                   if (posAux.esValida() && (this.Tabla[posAux.fila][posAux.columna]!=0) 
+                           && (comedora.getColorFicha()>0) == (this.Tabla[posAux.fila][posAux.columna]<0)){
+                            //Como no esta vacia, puede ser que tenemos algo para comer. 
+                            //Vemos si hay casillas vacias contiguas a la pieza a comer.
+                            posAux.fila = posAux.fila + (valor);
+                            posAux.columna = posAux.columna - (valor);
+                            if (posAux.esValida()) {
+                                if (this.Tabla[posAux.fila][posAux.columna] == 0) {
+                                    //**** Borramos ficha comida y movemos la ficha movedora.*****
+                                    
+                                    //Guardamos la ficha comida.
+                                    int intFicha = this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)];
+                                    Ficha comida= new Ficha(new Posicion(posAux.fila - (valor),posAux.columna + (valor)));
+                                    comida.setColorFicha(intFicha);
+                                    
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = 0;
 
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = null;
-                                comedora.mover(posAux.clone());
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
+                                    this.Tabla[pos.fila][pos.columna] = 0;
+                                    this.Tabla[posAux.fila][posAux.columna]=comedora.getColorFicha();
+                                    comedora.mover(posAux.clone());
+                                    
+                                    this.Tabla[posAux.fila][posAux.columna] = comedora.getColorFicha();
+                                    
+                                    fichasComidas.add(comida);
+                                    this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
+                                    fichasComidas.remove(fichasComidas.size()-1);
 
-                                fichasComidas.add(comida);
-                                this.ComerMayorCant(comedora, cantidad + 1, fichasComidas);
-                                fichasComidas.remove(fichasComidas.size()-1);
-
-                                //Desasemos lo que hicimos.
-                                this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = comida;
-                                comedora.mover(pos);
-                                this.Fichas[comedora.getPos().fila][comedora.getPos().columna] = comedora;
-                                this.Fichas[posAux.fila][posAux.columna] = null;
+                                    //Desasemos lo que hicimos.
+                                    this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = comida.getColorFicha();
+                                    comedora.mover(pos);
+                                    this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                }
                             }
                         }
-                    }
 
                 }
 
@@ -577,25 +575,19 @@ public class Tablero implements Cloneable {
 
     }
 
-    public Ficha[][] getFichas() {
-        return Fichas;
-    }
-
-    public Ficha getFicha(int i, int j) {
-        return Fichas[i][j];
-    }
+    
 
     public boolean esIgualA(Tablero t)
     {
-        for (int i = 0; i < Fichas.length; i++) {
-            for (int j = 0; j < Fichas.length; j++) {
+        for (int i = 0; i < this.Tabla.length; i++) {
+            for (int j = 0; j < this.Tabla.length; j++) {
                 if((i+j)%2==0 )
                 {
-                    if(this.Fichas[i][j]!=null && t.Fichas[i][j]!=null
-                         && !this.Fichas[i][j].esIgualA(t.Fichas[i][j]))
+                    if(this.Tabla[i][j]!=0 && t.Tabla[i][j]!=0
+                         && !(this.Tabla[i][j]==t.Tabla[i][j]))
                          return false;
-                    else if(this.Fichas[i][j]!=null && t.Fichas[i][j]==null ||
-                            this.Fichas[i][j]==null && t.Fichas[i][j]!=null)
+                    else if(this.Tabla[i][j]!=0 && t.Tabla[i][j]==0 ||
+                            this.Tabla[i][j]==0 && t.Tabla[i][j]!=0)
                         return false;
                 }
                 
@@ -605,43 +597,24 @@ public class Tablero implements Cloneable {
         }
         return true;
     }
-    public void setFichas(Ficha[][] val) {
-        this.Fichas = val;
-    }
-
-    public Ficha[][] clonarFichas() {
-        Ficha[][] clones = new Ficha[8][8];
-        for (int i = 0; i < Fichas.length; i++) {
-            for (int j = 0; j < Fichas.length; j++) {
-                if (this.Fichas[i][j] != null) {
-                    clones[i][j] = (Ficha) this.Fichas[i][j].clone();
-                    clones[i][j].setPos(this.Fichas[i][j].getPos().clone());
-                }
-            }
-
-        }
-       
-        return clones;
-    }
-
+    
     public String toString() {
         String cadena = "";
-        for (int i = 0; i < Fichas.length; i++) {
-            for (int j = 0; j < Fichas.length; j++) {
+        for (int i = 0; i < this.Tabla.length; i++) {
+            for (int j = 0; j < this.Tabla.length; j++) {
                 if ((i + j) % 2 == 0) {
-                    if (Fichas[i][j] != null) {
-                        if (Fichas[i][j].isDama()) {
-                            if (Fichas[i][j].esFichaBlanca) {
-                                cadena = cadena + " 2 ";
-                            } else {
-                                cadena = cadena + "-2 ";
-                            }
+                    if (this.Tabla[i][j] != 0) {
+                        if (Math.abs(this.Tabla[i][j])==2) {
+                            if(this.Tabla[i][j]<0)
+                                cadena = cadena + this.Tabla[i][j]+" ";
+                            else
+                                cadena = cadena +" "+ this.Tabla[i][j]+" ";
                         } else {
-                            if (Fichas[i][j].esFichaBlanca) {
-                                cadena = cadena + " 1 ";
-                            } else {
-                                cadena = cadena + "-1 ";
-                            }
+                            if(this.Tabla[i][j]<0)
+                                cadena = cadena + this.Tabla[i][j]+" ";
+                            else
+                                cadena = cadena +" "+ this.Tabla[i][j]+" ";
+                            
                         }
                     } else {
                         cadena = cadena + " 0 ";
@@ -655,19 +628,7 @@ public class Tablero implements Cloneable {
         return cadena;
     }
 
-    /**
-     * 
-     * @param f1 ficha a ser borrada.
-     * @return True si la pieza fue borrada con exito, y false si la pieza no pudo ser borrada.
-     */
-    public boolean BorrarFicha(Ficha f1) {
-        if (this.Fichas[f1.getPos().fila][f1.getPos().columna] != null) {
-            this.Fichas[f1.getPos().fila][f1.getPos().columna] = null;
-            return true;
-        }
-        return false;
-    }
-
+   
     public Object clone() {
         Object obj = null;
         try {
@@ -688,79 +649,91 @@ public class Tablero implements Cloneable {
             valor = -1;            //Ver si se puede comer a la derecha.
         }
         Posicion posAux = new Posicion(pos.fila + (valor), pos.columna + (valor));
-        if (movedora.isDama()) {
+        if (movedora.isDama()) 
+        {
             for (int i = 0; i < 2; i++) {
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
-                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                    while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
+                        if (this.Tabla[posAux.fila][posAux.columna] == 0) 
+                        {
                             // Borramos ficha comida y movemos la ficha movedora.                               
-                            this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                            this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = 0;
                             movedora.mover(posAux.clone());
-                            this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                            this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
                             //Guardar estado.   
                             Tablero table = new Tablero();
-                            table.setFichas(this.clonarFichas());
+                            table.Tabla=this.clonarTabla(this.Tabla);
                             table.fichaMovida=movedora;
                             sucesores.add(table);
-
+                            
+                           
                         }
+                        
+                        
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna + (valor);
+                      
                     }
-
+                     movedora.mover(pos);
+                     this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
+                     this.Tabla[posAux.fila-(valor)][posAux.columna-(valor)] = 0;
+                     
                 }
-                movedora.mover(pos);
-                this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
-                this.Fichas[posAux.fila-(valor)][posAux.columna-(valor)] = null;
+               
+               
                 //Ver si se puede comer a la izquierda.
                 posAux.fila = pos.fila + (valor);
                 posAux.columna = pos.columna - (valor);
                 if (posAux.esValida()) {
                     //Vemos si la casilla esta vacia.
-                    while (posAux.esValida() && this.Fichas[posAux.fila][posAux.columna] == null) {
-                        if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                    while (posAux.esValida() && this.Tabla[posAux.fila][posAux.columna] == 0) {
+                        if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                             // Borramos ficha comida y movemos la ficha movedora.                               
-                            this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                            this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = 0;
                             movedora.mover(posAux.clone());
-                            this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                            this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
                             //Guardar estado.   
                             Tablero table = new Tablero();
                             table.fichaMovida=movedora;
-                            table.setFichas(this.clonarFichas());
+                            table.Tabla=this.clonarTabla(this.Tabla);
                             sucesores.add(table);
-                            table=null;
+                            
                         }
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna - (valor);
                     }
+                    movedora.mover(pos);
+                    this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
+                    this.Tabla[posAux.fila-(valor)][posAux.columna+(valor)] = 0;
                 }
-                movedora.mover(pos);
-                this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
-                this.Fichas[posAux.fila-(valor)][posAux.columna+(valor)] = null;
+                
                 valor = valor * (-1);
                 posAux.fila = pos.fila + (valor);
                 posAux.columna = pos.columna + (valor);
             }
 
-        } else {
+        } else 
+        {
 
-            if (posAux.esValida()) {
+            if (posAux.esValida()) 
+            {
                 //Vemos si la casilla esta vacia.                    
-                if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                if (this.Tabla[posAux.fila][posAux.columna] == 0) 
+                {
                     // Borramos ficha comida y movemos la ficha movedora.                               
-                    this.Fichas[posAux.fila - (valor)][posAux.columna - (valor)] = null;
+                    this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = 0;
                     movedora.mover(posAux.clone());
-                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
                     //Guardar estado.   
                     Tablero table = new Tablero();
-                    table.setFichas(this.clonarFichas());
+                    table.Tabla=this.clonarTabla(this.Tabla);
                     table.fichaMovida=movedora;
                     sucesores.add(table);
 
                     movedora.mover(pos);
-                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
-                    this.Fichas[posAux.fila][posAux.columna] = null;
+                    this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
+                    this.Tabla[posAux.fila][posAux.columna] = 0;
                 }
             }
             //Ver si se puede mover a la izquierda.
@@ -768,20 +741,20 @@ public class Tablero implements Cloneable {
             posAux.columna = pos.columna - (valor);
             if (posAux.esValida()) {
                 //Vemos si la casilla esta vacia.
-                if (this.Fichas[posAux.fila][posAux.columna] == null) {
+                if (this.Tabla[posAux.fila][posAux.columna] == 0) {
                     // Borramos ficha comida y movemos la ficha movedora.                               
-                    this.Fichas[posAux.fila - (valor)][posAux.columna + (valor)] = null;
+                    this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = 0;
                     movedora.mover(posAux.clone());
-                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
+                    this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
                     //Guardar estado.   
                     Tablero table = new Tablero();
-                    table.setFichas(this.clonarFichas());
+                    table.Tabla=this.clonarTabla(this.Tabla);
                     table.fichaMovida=movedora;
                     sucesores.add(table);
 
                     movedora.mover(pos);
-                    this.Fichas[movedora.getPos().fila][movedora.getPos().columna] = movedora;
-                    this.Fichas[posAux.fila][posAux.columna] = null;
+                    this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
+                    this.Tabla[posAux.fila][posAux.columna] = 0;
                 }
             }
 
@@ -804,13 +777,13 @@ public class Tablero implements Cloneable {
 
         for (int j = 0; j < 8; j++) {
             if ((j + 0) % 2 == 0) {
-                if (Fichas[0][j] != null && !Fichas[0][j].esFichaBlanca) {
-                    Fichas[0][j].setDama(true);
+                if (this.Tabla[0][j] != 0 && this.Tabla[0][j]< 0) {
+                    Tabla[0][j]=-2;
                 }
             }
             if ((j + 7) % 2 == 0) {
-                if (Fichas[7][j] != null && Fichas[7][j].esFichaBlanca) {
-                    Fichas[7][j].setDama(true);
+                if (this.Tabla[7][j] != 0 && this.Tabla[7][j]> 0) {
+                    Tabla[7][j]=2;
                 }
             }
         }
@@ -821,10 +794,7 @@ public class Tablero implements Cloneable {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((j + i) % 2 == 0) {
-                    if (Fichas[i][j] != null && Fichas[i][j].esFichaBlanca == this.Turno) {
-                        con++;
-                    }
-                    if (Fichas[i][j] != null && Fichas[i][j].esFichaBlanca == this.Turno) {
+                    if (this.Tabla[i][j] != 0 && (this.Tabla[i][j]>0) == this.Turno) {
                         con++;
                     }
                 }
@@ -833,4 +803,18 @@ public class Tablero implements Cloneable {
         return con;
 
     }
+    public int[][]clonarTabla(int[][]t1){
+        int[][] clon= new int[8][8];
+        for (int i = 0; i < t1.length; i++) {
+            for (int j = 0; j < t1.length; j++) {
+                clon[i][j]=t1[i][j];
+                
+            }
+            
+        }
+        return clon;
+    }
+
+   
+            
 }

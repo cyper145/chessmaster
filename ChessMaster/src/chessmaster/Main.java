@@ -55,8 +55,8 @@ public class Main {
         System.out.println("------------------------------------------------------");
         
         //IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador1 = new AlfaBeta(4);
-        IEstrategia jugador2 = new MaxMin(3);
+        MaxMin jugador1 = new MaxMin(3);
+        AlfaBeta jugador2 = new AlfaBeta(5);
         Tablero jugada = null;
         
         long fin = System.currentTimeMillis() + 300000;
@@ -78,7 +78,7 @@ public class Main {
             //actualizar el tablero original...
             jugada.coronarPeon();
             tablero = jugada.getTablero();            
-            table.setFichas(jugada.clonarFichas());
+            table.Tabla=jugada.clonarTabla(jugada.Tabla);
             if(table.getTurnoBlancas())
                 System.out.println("Jugó blancas");
             else
@@ -102,7 +102,7 @@ public class Main {
             }
             jugada.coronarPeon();
             tablero = jugada.getTablero();
-            table.setFichas(jugada.clonarFichas());
+            table.Tabla=jugada.clonarTabla(jugada.Tabla);
             if(table.getTurnoBlancas())
                 System.out.println("Jugó blancas");
             else
