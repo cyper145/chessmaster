@@ -48,7 +48,7 @@ public class Posicion {
      * disminuye a medida que disminuye el recuadro.
      * @return el peso dependiendo de la posicion.
      */
-    public int PesoPos() throws Exception
+    public int PesoPos() 
     {
         if(this.fila==0 || this.columna==0 || fila== 7 || columna== 7)
             return 4;
@@ -58,8 +58,8 @@ public class Posicion {
             return 2;
         else if(fila==3 || columna==3 || fila== 4 || columna== 4)
             return 1;
-        else 
-            throw new Exception("Peso retornado NO esperado");
+        else
+            return 0;
         
         
     }

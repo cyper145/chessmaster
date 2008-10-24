@@ -16,7 +16,7 @@ public class Tablero implements Cloneable {
      * Como las instancias de esta clase van a ser los nodos de un arbol, esta 
      * variable indica el nivel en que se encuentra el nodo.
      */
-    private int Nivel;
+    private int Nivel=0;
     /**
      * Es un vector de sucesores. Que indica todos los hijos que tiene este 
      * nodo.
@@ -28,6 +28,10 @@ public class Tablero implements Cloneable {
     private Ficha[][] Fichas;
     private int[][] Tabla;
     public Ficha fichaMovida;// Es la ficha que se movio.
+    private double puntaje=0;
+    
+    private double alfa= Double.NEGATIVE_INFINITY;
+    private double beta= Double.POSITIVE_INFINITY;
     public Tablero(int[][] matTabla) {
         Fichas = new Ficha[8][8];
         this.Tabla = matTabla;
@@ -128,6 +132,7 @@ public class Tablero implements Cloneable {
      */
     public void GenerarSucesores() 
     {
+        int newLevel=this.Nivel+1;
         for (int i = 0; i < Fichas.length; i++) {
             for (int j = 0; j < Fichas.length; j++) {
                 if((i+j)%2==0 && this.Fichas[i][j]!=null)
@@ -140,6 +145,7 @@ public class Tablero implements Cloneable {
                     {
                         
                         // Sucesores generados por comer piezas
+                        this.cantidadPiezasComidas=0;
                         this.estadoPiezasComidas.clear();//Limpio el vector estatico.
                         f1.actualizarPosVieja();
                         if(this.puedeComer(f1))
@@ -152,6 +158,7 @@ public class Tablero implements Cloneable {
                         // Agregamos los estados generados en el vector sucesores.
                         for (int k = 0; k < estadosMovidas.size(); k++) {
                             Tablero t1 = (Tablero)estadosMovidas.get(k);
+                            t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
                             this.Sucesores.add(t1);
                             
                         }
@@ -159,6 +166,7 @@ public class Tablero implements Cloneable {
                         //Si hay algo de piezas comidas, lo agrego como sucesores.
                             for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
                                 Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
+                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
                                 this.Sucesores.add(t1);
                             }
                             
@@ -180,6 +188,15 @@ public class Tablero implements Cloneable {
         this.Sucesores = val;
     }
 
+    public double getPuntaje() {
+        return puntaje;
+    }
+
+    public void setPuntaje(double puntaje) {
+        this.puntaje = puntaje;
+    }
+    
+    
     /**
      * Calcula un numero que se le asigna al estado dependiendo de la 
      * heuristica.
@@ -187,14 +204,14 @@ public class Tablero implements Cloneable {
      * dependiento de la posicion que se encuentre la piesa.
      * Se les da mayor peso a las piesas que se encuentran en los extremos del trablaro.     
      */
-    public double CalcularValorDeEstado() {
+    public void CalcularValorDeEstado() {
 
         double sumaPonderada = 0;
-        double sumaPesos = 0;
+       
         for (int i = 0; i < this.Fichas.length; i++) {
-            for (int j = 0; j < Fichas.length; j++) {
+            for (int j = 0; j < this.Fichas.length; j++) {
 
-                if (((i + j) % 2) == 0) {
+                if (((i + j) % 2) == 0 && this.Fichas[i][j]!=null) {
                     Ficha f1 = this.Fichas[i][j];
 
                     //Todas las fichas del que le toca jugar 
@@ -207,12 +224,9 @@ public class Tablero implements Cloneable {
                         } else {
                             valorPiesa = 1;
                         }
-                        try {
-                            sumaPesos = sumaPesos + pos1.PesoPos();
+                                               
                             sumaPonderada = sumaPonderada + valorPiesa * pos1.PesoPos();
-                        } catch (Exception ex) {
-                            Logger.getLogger(Tablero.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        
 
 
                     }
@@ -222,17 +236,10 @@ public class Tablero implements Cloneable {
 
         }
 
-        return (sumaPonderada / sumaPesos);
+        this.puntaje=this.cantidadPiezasComidas+sumaPonderada ;
     }
 
-    /**
-     * Retorna true, si es el estado final que se encuentra en el nivel limite.
-     * @param nivel Indica el nivel limite al que se puede llegar.
-     * @return True si ya es el estado final, y false en caso contrario.
-     */
-    public boolean esEstadoFinal(int nivel) {
-        return this.Nivel == nivel;
-    }
+   
 
     
     /**
@@ -758,7 +765,33 @@ public class Tablero implements Cloneable {
         }
         return sucesores;
     }
-    public void coronarPeon() {
+    public Vector getSucesores(double valor)
+    {
+        Vector buscados= new Vector();
+        for (int i = 0; i < this.Sucesores.size(); i++) {
+            Tablero t1 = (Tablero) this.Sucesores.get(i);
+            if(t1.puntaje==valor)
+                buscados.add(t1);
+        }
+        return buscados;
+    }
+
+    public double getAlfa() {
+        return alfa;
+    }
+
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setAlfa(double alfa) {
+        this.alfa = alfa;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
+     public void coronarPeon() {
 
         for (int j = 0; j < 8; j++) {
             if ((j + 0) % 2 == 0) {

@@ -6,7 +6,7 @@ import java.util.Vector;
 // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
 // #[regen=yes,id=DCE.C466D43B-9B69-36C2-E561-E0EE4521A0DE]
 // </editor-fold> 
-public class Aleatorio{
+public class Aleatorio extends IEstrategia {
 
     // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
     // #[regen=yes,id=DCE.48E95DAD-337F-F0D4-6169-B61D5B94B905]
