@@ -55,7 +55,7 @@ public class Main {
         System.out.println("------------------------------------------------------");
         
         IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador2 = new AlfaBeta(3);
+        IEstrategia jugador2 = new AlfaBeta(4);
         Tablero jugada = null;
         
         long fin = System.currentTimeMillis() + 150000;

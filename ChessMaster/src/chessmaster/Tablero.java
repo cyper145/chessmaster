@@ -50,6 +50,7 @@ public class Tablero implements Cloneable {
                         }
                         peo.esFichaBlanca = true;
                         Fichas[i][j] = peo;
+                       
                     } else if (matTabla[i][j] < 0) {
                         //Las fichas Min son negativas
                         Posicion p = new Posicion(i, j);
@@ -62,6 +63,7 @@ public class Tablero implements Cloneable {
                         }
                         peo.esFichaBlanca = false;
                         Fichas[i][j] = peo;
+                        
                     }
                 }
 
@@ -598,6 +600,7 @@ public class Tablero implements Cloneable {
             }
 
         }
+       
         return clones;
     }
 
@@ -706,7 +709,7 @@ public class Tablero implements Cloneable {
                             table.fichaMovida=movedora;
                             table.setFichas(this.clonarFichas());
                             sucesores.add(table);
-
+                            table=null;
                         }
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna - (valor);
