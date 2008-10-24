@@ -28,10 +28,10 @@ public class Tablero implements Cloneable {
     private Ficha[][] Fichas;
     private int[][] Tabla;
     public Ficha fichaMovida;// Es la ficha que se movio.
-    private double puntaje=0;
+    public double puntaje=0;
     
-    private double alfa= Double.NEGATIVE_INFINITY;
-    private double beta= Double.POSITIVE_INFINITY;
+    public double alfa= Double.NEGATIVE_INFINITY;
+    public double beta= Double.POSITIVE_INFINITY;
     public Tablero(int[][] matTabla) {
         Fichas = new Ficha[8][8];
         this.Tabla = matTabla;
@@ -190,15 +190,8 @@ public class Tablero implements Cloneable {
         this.Sucesores = val;
     }
 
-    public double getPuntaje() {
-        return puntaje;
-    }
+    
 
-    public void setPuntaje(double puntaje) {
-        this.puntaje = puntaje;
-    }
-    
-    
     /**
      * Calcula un numero que se le asigna al estado dependiendo de la 
      * heuristica.
@@ -779,21 +772,7 @@ public class Tablero implements Cloneable {
         return buscados;
     }
 
-    public double getAlfa() {
-        return alfa;
-    }
-
-    public double getBeta() {
-        return beta;
-    }
-
-    public void setAlfa(double alfa) {
-        this.alfa = alfa;
-    }
-
-    public void setBeta(double beta) {
-        this.beta = beta;
-    }
+    
      public void coronarPeon() {
 
         for (int j = 0; j < 8; j++) {

@@ -33,7 +33,7 @@ public class AlfaBeta extends IEstrategia {
         if(this.testTerminal(estado))
         {
             estado.CalcularValorDeEstado();
-            return estado.getPuntaje();
+            return estado.puntaje;
         }
         double valor= Double.POSITIVE_INFINITY;
         estado.GenerarSucesores();
@@ -42,14 +42,14 @@ public class AlfaBeta extends IEstrategia {
             Tablero s= (Tablero)sucesores.get(i);
             valor= Math.min(valor, this.ValorMax(s));
             
-            if(valor < estado.getAlfa() || valor == estado.getAlfa() )
+            if(valor < estado.alfa || valor == estado.alfa )
             {
                
                 return valor;
             }
-            estado.setBeta(Math.min(estado.getBeta(), valor));
+            estado.beta=Math.min(estado.beta, valor);
         }
-        estado.setPuntaje(valor);
+        estado.puntaje=valor;
         return valor;
         
     }
@@ -60,7 +60,7 @@ public class AlfaBeta extends IEstrategia {
         if(this.testTerminal(estado))
         {
             estado.CalcularValorDeEstado();
-            return estado.getPuntaje();
+            return estado.puntaje;
         }
         double valor= Double.NEGATIVE_INFINITY;
         estado.GenerarSucesores();
@@ -69,14 +69,14 @@ public class AlfaBeta extends IEstrategia {
             Tablero s= (Tablero)sucesores.get(i);
             valor= Math.max(valor, this.ValorMin(s));
             
-            if(valor > estado.getBeta() || valor == estado.getBeta() )
+            if(valor > estado.beta || valor == estado.beta )
             {
                 
                 return valor;
             }
-            estado.setAlfa(Math.max(estado.getAlfa(), valor));
+            estado.alfa=Math.max(estado.alfa, valor);
         }
-        estado.setPuntaje(valor);
+        estado.puntaje=valor;
         return valor;
     }
     

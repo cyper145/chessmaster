@@ -54,12 +54,14 @@ public class Main {
         System.out.println(table.toString());
         System.out.println("------------------------------------------------------");
         
-        IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador2 = new AlfaBeta(4);
+        //IEstrategia jugador1 = new Aleatorio();
+        IEstrategia jugador1 = new AlfaBeta(4);
+        IEstrategia jugador2 = new MaxMin(3);
         Tablero jugada = null;
         
-        long fin = System.currentTimeMillis() + 150000;
+        long fin = System.currentTimeMillis() + 300000;
         while(System.currentTimeMillis() <= fin){            
+            
             table.setTurnoBlancas(true);
             if(table.tieneFichasEnTablero() != 0){
                 Tablero aux = new Tablero(tablero);

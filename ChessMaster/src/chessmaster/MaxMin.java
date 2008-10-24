@@ -1,37 +1,77 @@
 package chessmaster;
 
+import java.util.Vector;
 
-// <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-// #[regen=yes,id=DCE.7346A3CE-E105-85AC-3531-135DCD4B42F3]
-// </editor-fold> 
+
+
 public class MaxMin extends IEstrategia {
-
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.FABA8079-9348-64BD-5FBF-034CBF9009A9]
-    // </editor-fold> 
-    public MaxMin () {
+    private int nivelMaximo;
+    
+    public MaxMin (int nivelMax) {
+         this.nivelMaximo=nivelMax;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.BF9DF18F-126A-80B5-977A-D76ABD323B9B]
-    // </editor-fold> 
-    public Tablero jugar (Tablero actual) {
-        return null;
+     public Tablero jugar (Tablero actual) 
+    {
+        
+        Tablero t=null;
+        double v=this.ValorMax(actual);
+        Vector sucesores=actual.getSucesores(v);//Trae los sucesores que tiene un puntaje "v"
+        if(sucesores.size()!=0)
+        {
+            int rd=(int)(Math.random()*sucesores.size());
+            t=(Tablero)sucesores.get(rd);
+        }
+        
+        return t;
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.FB52DA1E-638F-E81E-5768-B13A21A6E34E]
-    // </editor-fold> 
-    public double ValorMax (Tablero estado) {
-        return 0.0;
+
+    private double ValorMin (Tablero estado) 
+    {
+        if(this.testTerminal(estado))
+        {
+            estado.CalcularValorDeEstado();
+            return estado.puntaje;
+        }
+        double valor= Double.POSITIVE_INFINITY;
+        estado.GenerarSucesores();
+        Vector sucesores= estado.getSucesores();
+        for (int i = 0; i < sucesores.size(); i++) {
+            Tablero s= (Tablero)sucesores.get(i);
+            valor= Math.min(valor, this.ValorMax(s));
+            
+        }
+        estado.puntaje=valor;
+        return valor;
+        
     }
 
-    // <editor-fold defaultstate="collapsed" desc=" UML Marker "> 
-    // #[regen=yes,id=DCE.5C4B34B2-93BD-AF70-2F06-2BE018A8BEBD]
-    // </editor-fold> 
-    public double ValorMin (Tablero estado) {
-        return 0.0;
+
+    private double ValorMax (Tablero estado) 
+    {
+        if(this.testTerminal(estado))
+        {
+            estado.CalcularValorDeEstado();
+            return estado.puntaje;
+        }
+        double valor= Double.NEGATIVE_INFINITY;
+        estado.GenerarSucesores();
+        Vector sucesores= estado.getSucesores();
+        for (int i = 0; i < sucesores.size(); i++) {
+            Tablero s= (Tablero)sucesores.get(i);
+            valor= Math.max(valor, this.ValorMin(s));
+            
+        }
+        estado.puntaje=valor;
+        return valor;
     }
+    
+    private boolean testTerminal(Tablero estado)
+    {
+        return(estado.getNivel()==this.nivelMaximo);
+    }
+    
 
 }
 
