@@ -36,7 +36,7 @@ public class AlfaBeta extends IEstrategia {
             return estado.puntaje;
         }
         double valor= Double.POSITIVE_INFINITY;
-        estado.GenerarSucesores();
+        estado.GenerarSucesores(true);
         Vector sucesores= estado.getSucesores();
         for (int i = 0; i < sucesores.size(); i++) {
             Tablero s= (Tablero)sucesores.get(i);
@@ -63,7 +63,7 @@ public class AlfaBeta extends IEstrategia {
             return estado.puntaje;
         }
         double valor= Double.NEGATIVE_INFINITY;
-        estado.GenerarSucesores();
+        estado.GenerarSucesores(false);
         Vector sucesores= estado.getSucesores();
         for (int i = 0; i < sucesores.size(); i++) {
             Tablero s= (Tablero)sucesores.get(i);

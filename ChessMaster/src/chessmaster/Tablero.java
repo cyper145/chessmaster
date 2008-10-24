@@ -125,6 +125,12 @@ public class Tablero implements Cloneable {
     public void setTurnoBlancas(boolean val) {
         this.Turno = val;
     }
+    public void GenerarSucesores()
+    {
+        //Con false hacemos que primero coma si puede comer y luego se mueva si se puede mover.
+        //Si era true, seria al reves.
+        this.GenerarSucesores(false);
+    }
 
     /**
      * Genera todos los posibles estados sucesores que puede tener un 
@@ -132,7 +138,7 @@ public class Tablero implements Cloneable {
      * si es que no se pueden generar nuevos sucesores.
      *
      */
-    public void GenerarSucesores() 
+    public void GenerarSucesores(boolean esMin) 
     {
         int newLevel=this.Nivel+1;
         for (int i = 0; i < Fichas.length; i++) {
@@ -156,21 +162,42 @@ public class Tablero implements Cloneable {
                         f1.actualizarPosVieja();
                         estadosMovidas= this.MoverFicha(f1);
                         
-                        
-                        // Agregamos los estados generados en el vector sucesores.
-                        for (int k = 0; k < estadosMovidas.size(); k++) {
-                            Tablero t1 = (Tablero)estadosMovidas.get(k);
-                            t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
-                            this.Sucesores.add(t1);
+                        if(esMin)
+                        {
+                            // Agregamos los estados generados en el vector sucesores.
+                            for (int k = 0; k < estadosMovidas.size(); k++) {
+                                Tablero t1 = (Tablero)estadosMovidas.get(k);
+                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
+                                this.Sucesores.add(t1);
                             
-                        }
-                        
-                        //Si hay algo de piezas comidas, lo agrego como sucesores.
+                            }
+                            //Si hay algo de piezas comidas, lo agrego como sucesores.
                             for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
                                 Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
                                 t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
                                 this.Sucesores.add(t1);
                             }
+                        }else{
+                            //Si hay algo de piezas comidas, lo agrego como sucesores.
+                            for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
+                                Tablero t1= (Tablero)this.estadoPiezasComidas.get(k);
+                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
+                                this.Sucesores.add(t1);
+                            }
+                            // Agregamos los estados generados en el vector sucesores.
+                            for (int k = 0; k < estadosMovidas.size(); k++) {
+                                Tablero t1 = (Tablero)estadosMovidas.get(k);
+                                t1.Nivel=newLevel;// Le digo al estado en que nivel esta.
+                                this.Sucesores.add(t1);
+                            
+                            }
+                            
+                        }
+                        
+                        
+                        
+                        
+                       
                             
                     }
                         
