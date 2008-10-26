@@ -2,7 +2,7 @@ package DamasUNA;
 
 
 
-public class Ficha implements Cloneable{
+public class Ficha {
 
 
     private Posicion posActual;
@@ -61,14 +61,13 @@ public class Ficha implements Cloneable{
         this.posAnterior = this.posActual.clone();
     }
        
-    public Object clone() {
-        Object obj = null;
-        try {
-            obj = super.clone();
-        } catch (CloneNotSupportedException ex) {
-            System.out.println(" no se puede duplicar");
-        }
-        return obj;
+    public Ficha clonar() {
+        Ficha nueva=new Ficha(this.getPos().clone());
+        nueva.posAnterior=this.posAnterior.clone();
+        nueva.Dama=this.Dama;
+        nueva.esFichaBlanca=this.esFichaBlanca;
+        nueva.ColorFicha=this.ColorFicha;
+        return nueva;
     }
     
     public boolean isDama() {

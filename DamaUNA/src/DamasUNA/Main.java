@@ -144,8 +144,8 @@ public class Main {
 //        for (int i = 0; i < resultado.size(); i++) {
 //            tabla = (Tablero)resultado.get(i);
 //            System.out.println("\n"+tabla.toString()+"\n");
-//            for (int j = 0; j < tabla.VectorDeComidas.size(); j++) {
-//                Ficha f1=(Ficha)tabla.VectorDeComidas.get(j);
+//            for (int j = 0; j < tabla.VectorDeFichasComidas.size(); j++) {
+//                Ficha f1=(Ficha)tabla.VectorDeFichasComidas.get(j);
 //                System.out.print(f1.toString()+",\n");
 //                
 //            }

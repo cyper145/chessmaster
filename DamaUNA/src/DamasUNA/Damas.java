@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Damas extends JFrame {
         private int[][] PosTablero;
-    
+       
     
 	public Damas() {
 		
@@ -20,21 +20,7 @@ public class Damas extends JFrame {
 		JMenu menuJuego = new JMenu("Juego");
 		menuJuego.setMnemonic('J');
 		
-		JMenuItem mItemSobre = new JMenuItem("Sobre");
 		
-		mItemSobre.setMnemonic('e');
-		/*mItemSobre.addActionListener( 
-			new ActionListener(){
-				public void actionPerformed( ActionEvent e){
-					//Mostra a tela de About
-					JOptionPane.showMessageDialog( menuJuego,
-	                	"Damas \n\n Juego de Damas implementado para la disciplina de IA V\n" +
-	                	"Profesor Ing. Julio Paciello\nIntegrantes:\n  Arturo Ferreira\n  Manuael Avalos\n Augusto Valdez\n Aditardo Vazquez ",
-	                    "Sobre", JOptionPane.INFORMATION_MESSAGE);			
-				}
-			}
-		); */
-		menuJuego.add(mItemSobre);	
 		menuJuego.addSeparator();
 //-------->juego local<--------------------------------------		
 		JMenuItem mItemNuevo = new JMenuItem("Resetear");
@@ -43,12 +29,13 @@ public class Damas extends JFrame {
 		mItemNuevo.addActionListener( 
 			new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI();
+			TableroGUI tablero = new TableroGUI('A');
 		      	tablero.resetearTablero();
-		      	tablero.posicionaJugador(1,0);
-		      	tablero.posicionaJugador(-1,40);
+		      	tablero.posicionaJugador('A',0);
+		      	tablero.posicionaJugador('B',40);
+                        tablero.muestra(mdiDamas);
+                         //Esperamos 2 segundo para borrar las piezas comidas...
                         
-		      	tablero.muestra(mdiDamas);
 				}
 			}
 		);
@@ -61,14 +48,12 @@ public class Damas extends JFrame {
              AlfaBetaVsMaxmin.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI();
-		      	tablero.resetearTablero();
-                        
-                         //randomV();
+				                        
+                         
                         AlfaBetaVsMaxmin estrategia1= new AlfaBetaVsMaxmin();
-                        
-                tablero.posActual(estrategia1.jugar());
-		tablero.muestra(mdiDamas);
+                        estrategia1.inicializar(mdiDamas);
+                        estrategia1.start();
+                
                 
                                 }
              }       
@@ -80,12 +65,12 @@ public class Damas extends JFrame {
              AleatoriavsMinimax.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI();
+				TableroGUI tablero = new TableroGUI('A');
 		      	tablero.resetearTablero();
                        
                         AleatoriovsMinimax estrategia2= new AleatoriovsMinimax();
                         
-                tablero.posActual(estrategia2.jugar());
+                
 		tablero.muestra(mdiDamas);
                 //long x=System.currentTimeMillis()+5000;
                 //while(x<=System.currentTimeMillis());
@@ -101,12 +86,12 @@ public class Damas extends JFrame {
              AleatoriavsAlfaBeta.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI();
+				TableroGUI tablero = new TableroGUI('A');
 		      	tablero.resetearTablero();
                        
                         AleatorioVsAlfaBeta estrategia3= new AleatorioVsAlfaBeta();
                         
-                tablero.posActual(estrategia3.jugar());
+               
 		tablero.muestra(mdiDamas);    
                                 }
              }       
@@ -165,11 +150,14 @@ public void randomV(){
 		
                 
                 Damas mainFrame = new Damas();
-               // mainFrame.randomV();
+               
                 
 		mainFrame.setSize(840, 680);
                 mainFrame.setLocation(90,40);
 		mainFrame.setVisible(true);
+                
+                
+                
 	}
 }//termina clase Damas
 

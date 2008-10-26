@@ -21,24 +21,66 @@ public class Tablero implements Cloneable {
      * Es un vector de sucesores. Que indica todos los hijos que tiene este 
      * nodo.
      */
+    
     private Vector Sucesores= new Vector();
-    public static int cantidadPiezasComidas = 0;
+    /**
+     * Indica la cantidad de piezas que se han comido en este estado,
+     * esta variable es distinto de cero, solo si se ejercuto el metodo 
+     * this.ComerMayorCant(comedora, cantidad, VectorDeFichasComidas);
+     */
+    public static int cantidadPiezasComidas;
+    /**
+     * Es un vector de objetos Tablero, que indica el estado donde se comieron fichas.
+     * Este vector se llena luego  de ejecutar la funcion ComerMayorCant.
+     */
     public static Vector estadoPiezasComidas = new Vector();
-    public Vector VectorDeComidas= new Vector();
+    
+    /**
+     * Es un vector de Ficha, que contiene todas las fichas que se comieron en este
+     * estado.
+     */
+    public Vector VectorDeFichasComidas= new Vector();
+    
+    /**
+     * Es una matiz de enteros que indica el estado del tablero.
+     * Las alternativas posibles son 1,2,0,-1,-2. Los 1s son peones,
+     * los 2 son damas, y el cero es un espacio vacio.
+     */
     public int[][] Tabla;
-    public Ficha fichaMovida;// Es la ficha que se movio.
+    
+    // Es la ficha que se movio.
+    public Ficha fichaMovida;
+    
+    //Indica la el puntaje que tiene este estado.
     public double puntaje=0;
     
+    /**
+     * Estos valores se utilizan para la estrategia de poda Alfa-Beta.
+     */
     public double alfa= Double.NEGATIVE_INFINITY;
     public double beta= Double.POSITIVE_INFINITY;
+    
+    /**
+     * Constructores, la matriz es una matriz de enteros que indica el estado del tablero.
+     * Las alternativas posibles son 1,2,0,-1,-2. Los 1s son peones,
+     * los 2 son damas, y el cero es un espacio vacio.
+     * @param matTabla
+     */
     public Tablero(int[][] matTabla) {
         
         this.Tabla=matTabla;
+        this.cantidadPiezasComidas=0;
+        
     }
 
     private Tablero() {
+        this.cantidadPiezasComidas=0;
+        
     }
 
+    /**
+     * @return Retorna el nivel en el arbol MaxMin que se encuentra en este estado.
+     */
     public int getNivel() {
         return Nivel;
     }
@@ -47,54 +89,43 @@ public class Tablero implements Cloneable {
         this.Nivel = val;
     }
 
+    /**
+     * 
+     * @return True si es el turno de las blancas.
+     */
     public boolean getTurnoBlancas() {
         return this.Turno;
     }
 
     /**
-     * Devuelve el estado del juego en una matriz numerica donde los numeros positivos le
-     * corresponde a las piezas de un jugador, y numeros negativos que corresponde a las
-     * piezas del contrincante. El numero 1 es un peon, 2 es una dama y 0 una casilla vacia.
      * @return una Matriz de enteros que representa un estado.
      */
-    public int[][] getTablero() {
-//        int [][] tabla = new int[8][8];        
-//        for (int i = 0; i < this.Fichas.length; i++) {
-//            for (int j = 0; j < this.Fichas.length; j++) {
-//                //Si es positivo es Max, sino Min.
-//                if (((i + j) % 2) == 0 && Fichas[i][j] != null) {
-//                    if (Fichas[i][j].esFichaBlanca) {                        
-//                        //Si es 1 es peon, sino es Dama
-//                        if (Fichas[i][j].isDama()) {
-//                            tabla[i][j] = 2;
-//                        } else {
-//                            tabla[i][j] = 1;
-//                        }                        
-//                    }
-//                    if (!Fichas[i][j].esFichaBlanca) {
-//                        //Las fichas Min son negativas                        
-//                        if (Fichas[i][j].isDama()) {
-//                            tabla[i][j] = -2;
-//                        } else {
-//                            tabla[i][j] = -1;
-//                        }
-//                    }
-//                }
-//            }
-            
-//        }
+    public int[][] getTablero() {      
         return this.Tabla;
     }
 
     public void setTurnoBlancas(boolean val) {
         this.Turno = val;
     }
+    public void CambiarTurno()
+    {
+        if(this.Turno)
+            this.Turno=false;
+        else
+            this.Turno=true;
+    }
+    /**
+     * Se utiliza para la estrategia Aleatoria, genera un movimiento aleatorio.
+     * Seleccionando un ficha de forma aleatoria y generando sucesores de esa ficha.
+     */
     public void GeneraradorAleatorio()
     {
-        //Con false hacemos que primero coma si puede comer y luego se mueva si se puede mover.
-        //Si era true, seria al reves.
-        this.GenerarSucesores(true);
+         this.GenerarSucesores(true);
     }
+    
+    /**
+     * Genera TODOS los Sucesores posibles para las otras estrategias.
+     */
     public void GenerarSucesores()
     {
         this.GenerarSucesores(false);
@@ -133,6 +164,7 @@ public class Tablero implements Cloneable {
                             f1.actualizarPosVieja();
                             if (this.puedeComer(f1)) {
                                 esUnaComedora = true;
+                                
                                 this.ComerMayorCant(f1, 0, new Vector());
                                 //Si hay algo de piezas comidas, lo agrego como sucesores.
                                 for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
@@ -142,7 +174,6 @@ public class Tablero implements Cloneable {
                                 }
                             } else if (!esUnaComedora) {
                                 //Sucesores generados
-                                f1.actualizarPosVieja();
                                 estadosMovidas = this.MoverFicha(f1);
 
 
@@ -159,6 +190,7 @@ public class Tablero implements Cloneable {
                         
                       
                     }
+                    f1=null;
                         
                 }
                 
@@ -167,17 +199,16 @@ public class Tablero implements Cloneable {
         }
         
     }
-
+    
+    /**
+     * 
+     * @return Un objeto vector que contiene a todos los sucesores posibles del estado actual.
+     */
     public Vector getSucesores() {
         return Sucesores;
     }
 
-    public void setSucesores(Vector<Tablero> val) {
-        this.Sucesores = val;
-    }
-
     
-
     /**
      * Calcula un numero que se le asigna al estado dependiendo de la 
      * heuristica.
@@ -205,11 +236,8 @@ public class Tablero implements Cloneable {
                         } else {
                             valorPiesa = 1;
                         }
-                                               
-                            sumaPonderada = sumaPonderada + valorPiesa * pos1.PesoPos();
-                        
-
-
+                         sumaPonderada = sumaPonderada + valorPiesa * pos1.PesoPos();
+                       
                     }
                 }
 
@@ -217,7 +245,7 @@ public class Tablero implements Cloneable {
 
         }
 
-        this.puntaje=this.VectorDeComidas.size()*sumaPonderada + sumaPonderada;
+        this.puntaje=this.VectorDeFichasComidas.size()*sumaPonderada + sumaPonderada;
     }
 
    
@@ -239,8 +267,7 @@ public class Tablero implements Cloneable {
     }
 
     /**
-     *Retorna true si se puede comer una ficha columna false si es que no fichas por 
-     *comer. 
+     *Retorna true si la ficha "comedora" puede comer alguna ficha. 
      */
     public boolean puedeComer(Ficha comedora) {
 
@@ -363,15 +390,15 @@ public class Tablero implements Cloneable {
                 
                 this.estadoPiezasComidas.clear();
                 t.cantidadPiezasComidas = cantidad;
-                t.VectorDeComidas = (Vector) fichasComidas.clone();
+                t.VectorDeFichasComidas = (Vector) fichasComidas.clone();
                 
-                t.fichaMovida=(Ficha)comedora.clone();
+                t.fichaMovida=comedora.clonar();
                 this.estadoPiezasComidas.add(t);
             }
             else if(cantidad !=0 && cantidad == this.cantidadPiezasComidas && !this.EsRepetidoComido(t))
             {
-                t.VectorDeComidas = (Vector) fichasComidas.clone();
-                t.fichaMovida=(Ficha)comedora.clone();
+                t.VectorDeFichasComidas = (Vector) fichasComidas.clone();
+                t.fichaMovida=comedora.clonar();
                 this.estadoPiezasComidas.add(t);
             }     
             
@@ -575,7 +602,11 @@ public class Tablero implements Cloneable {
 
     }
 
-    
+    /**
+     * 
+     * @param t
+     * @return True si el estado "t" es igual al estado actual.
+     */
 
     public boolean esIgualA(Tablero t)
     {
@@ -598,6 +629,10 @@ public class Tablero implements Cloneable {
         return true;
     }
     
+    /**
+     * 
+     * @return Un cadena para imprimir en pantalla. 
+     */
     public String toString() {
         String cadena = "";
         for (int i = 0; i < this.Tabla.length; i++) {
@@ -628,7 +663,10 @@ public class Tablero implements Cloneable {
         return cadena;
     }
 
-   
+   /**
+    * Para clonar el estado actual.
+    * @return
+    */
     public Object clone() {
         Object obj = null;
         try {
@@ -638,7 +676,12 @@ public class Tablero implements Cloneable {
         }
         return obj;
     }
-
+    /**
+     * Retorna un vector de Tablero que son todos los estados posibles donde la ficha movedora
+     * se puede mover.
+     * @param movedora
+     * @return
+     */
     public Vector MoverFicha(Ficha movedora) {
         Vector sucesores = new Vector();
         Posicion pos = movedora.getPos();
@@ -664,7 +707,7 @@ public class Tablero implements Cloneable {
                             //Guardar estado.   
                             Tablero table = new Tablero();
                             table.Tabla=this.clonarTabla(this.Tabla);
-                            table.fichaMovida=movedora;
+                            table.fichaMovida=movedora.clonar();
                             sucesores.add(table);
                             
                            
@@ -695,7 +738,7 @@ public class Tablero implements Cloneable {
                             this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
                             //Guardar estado.   
                             Tablero table = new Tablero();
-                            table.fichaMovida=movedora;
+                            table.fichaMovida=movedora.clonar();
                             table.Tabla=this.clonarTabla(this.Tabla);
                             sucesores.add(table);
                             
@@ -725,12 +768,14 @@ public class Tablero implements Cloneable {
                     this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = 0;
                     movedora.mover(posAux.clone());
                     this.Tabla[posAux.fila][posAux.columna] = movedora.getColorFicha();
-                    //Guardar estado.   
+                    
+                    //Preparo el estado para luego guardarlo.   
                     Tablero table = new Tablero();
                     table.Tabla=this.clonarTabla(this.Tabla);
-                    table.fichaMovida=movedora;
+                    table.fichaMovida=movedora.clonar();
                     sucesores.add(table);
-
+                    
+                    //Le retorno a la movedora en su posicion inicial.
                     movedora.mover(pos);
                     this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
                     this.Tabla[posAux.fila][posAux.columna] = 0;
@@ -749,7 +794,7 @@ public class Tablero implements Cloneable {
                     //Guardar estado.   
                     Tablero table = new Tablero();
                     table.Tabla=this.clonarTabla(this.Tabla);
-                    table.fichaMovida=movedora;
+                    table.fichaMovida=movedora.clonar();
                     sucesores.add(table);
 
                     movedora.mover(pos);
@@ -761,6 +806,11 @@ public class Tablero implements Cloneable {
         }
         return sucesores;
     }
+    /**
+     * 
+     * @param valor
+     * @return Un vector de Tablero que indica todos los sucesores que tiene puntaje igual a valor.
+     */
     public Vector getSucesores(double valor)
     {
         Vector buscados= new Vector();
@@ -772,7 +822,9 @@ public class Tablero implements Cloneable {
         return buscados;
     }
 
-    
+    /**
+     * Verifica si algun peon en este estado puede ser coronado como reina.
+     */
      public void coronarPeon() {
 
         for (int j = 0; j < 8; j++) {
@@ -788,7 +840,10 @@ public class Tablero implements Cloneable {
             }
         }
     }
-    
+    /**
+     * Verifica la cantidad de fichas que existen en tablero.
+     * @return la cantidad de fichas que tiene al que juega en este estado.
+     */
     public int tieneFichasEnTablero() {
         int con = 0;
         for (int i = 0; i < 8; i++) {
@@ -803,6 +858,11 @@ public class Tablero implements Cloneable {
         return con;
 
     }
+    /**
+     * Retorna una tabla de enteros identica a la tabla que representa este estado.
+     * @param t1
+     * @return
+     */
     public int[][]clonarTabla(int[][]t1){
         int[][] clon= new int[8][8];
         for (int i = 0; i < t1.length; i++) {
