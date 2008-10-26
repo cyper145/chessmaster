@@ -38,7 +38,7 @@ public class AlfaBetaVsMaxmin extends Thread{
         System.out.println("------------------------------------------------------");
 
         //IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador1 = new AlfaBeta(2);//verde
+        IEstrategia jugador1 = new AlfaBeta(4);//verde
         IEstrategia jugador2 = new MaxMin(2);//azul
         Tablero jugada = null;
 

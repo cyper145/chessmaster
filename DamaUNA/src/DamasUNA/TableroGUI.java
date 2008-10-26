@@ -194,7 +194,7 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
             tabuleiro[filaO][columaO] = ' ';
             destino.setForeground(origem.getForeground());
             origem.setForeground(origem.getBackground());
-            if ((columnaD == 7 && tabuleiro[filaD][columnaD] == 'A') || (filaD == 0 && tabuleiro[filaD][columnaD] == 'B') || (origem.isDama())) {
+            if ((filaD == 7 && tabuleiro[filaD][columnaD] == 'A') || (filaD == 0 && tabuleiro[filaD][columnaD] == 'B') || (origem.isDama())) {
                 destino.setDama(true);
             }
             casa[filaO][columaO].setDama(false);
