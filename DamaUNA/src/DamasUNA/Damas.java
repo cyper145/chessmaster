@@ -23,26 +23,7 @@ public class Damas extends JFrame {
 		
 		menuJuego.addSeparator();
 //-------->juego local<--------------------------------------		
-		JMenuItem mItemNuevo = new JMenuItem("Resetear");
-		
-		mItemNuevo.setMnemonic('R');
-		mItemNuevo.addActionListener( 
-			new ActionListener(){
-				public void actionPerformed( ActionEvent e){
-			TableroGUI tablero = new TableroGUI('A');
-		      	tablero.resetearTablero();
-		      	tablero.posicionaJugador('A',0);
-		      	tablero.posicionaJugador('B',40);
-                        tablero.muestra(mdiDamas);
-                         //Esperamos 2 segundo para borrar las piezas comidas...
-                        
-				}
-			}
-		);
-		menuJuego.add(mItemNuevo);
-		menuJuego.addSeparator();
-                
-//----------------------------------------------------------------                
+		             
              JMenuItem AlfaBetaVsMaxmin = new JMenuItem("AlfaBeta vs. MaxMin");
              
              AlfaBetaVsMaxmin.addActionListener(
@@ -61,21 +42,17 @@ public class Damas extends JFrame {
                 menuJuego.add(AlfaBetaVsMaxmin);
 		menuJuego.addSeparator();
 //----------------------------------------------------------------     
-                JMenuItem AleatoriavsMinimax = new JMenuItem("Aleatoria vs. Minimax");
+                JMenuItem AleatoriavsMinimax = new JMenuItem("Aleatoria vs. MaxMin");
              AleatoriavsMinimax.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI('A');
-		      	tablero.resetearTablero();
-                       
-                        AleatoriovsMinimax estrategia2= new AleatoriovsMinimax();
+				AleatoriovsMaxMin estrategia1= new AleatoriovsMaxMin();
+                        estrategia1.inicializar(mdiDamas);
+                        estrategia1.start();
                         
                 
-		tablero.muestra(mdiDamas);
-                //long x=System.currentTimeMillis()+5000;
-                //while(x<=System.currentTimeMillis());
-                //tablero.resetearTablero();
-                //tablero.muestra(mdiDamas);
+		
+               
                                 }
              }       
                    );  
@@ -86,13 +63,12 @@ public class Damas extends JFrame {
              AleatoriavsAlfaBeta.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				TableroGUI tablero = new TableroGUI('A');
-		      	tablero.resetearTablero();
-                       
-                        AleatorioVsAlfaBeta estrategia3= new AleatorioVsAlfaBeta();
+				AleatorioVsAlfaBeta estrategia1= new AleatorioVsAlfaBeta();
+                        estrategia1.inicializar(mdiDamas);
+                        estrategia1.start();
                         
                
-		tablero.muestra(mdiDamas);    
+		
                                 }
              }       
                    );  

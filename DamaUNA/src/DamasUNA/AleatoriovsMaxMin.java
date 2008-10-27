@@ -12,12 +12,12 @@ import javax.swing.JDesktopPane;
  *
  * @author Ramon
  */
-public class AlfaBetaVsMaxmin extends Thread{
+public class AleatoriovsMaxMin extends Thread{
 
     private TableroGUI ITablero;
 
-    public AlfaBetaVsMaxmin() {
-        this.ITablero= new TableroGUI('A',"Alfa-Beta Vs MaxMin");
+    public AleatoriovsMaxMin() {
+        this.ITablero= new TableroGUI('A', "Aleatorio Vs MaxMin");
     }
 
     
@@ -38,8 +38,8 @@ public class AlfaBetaVsMaxmin extends Thread{
         System.out.println("------------------------------------------------------");
 
         //IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador1 = new AlfaBeta(4);//verde
-        IEstrategia jugador2 = new MaxMin(2);//azul
+        IEstrategia jugador1 = new Aleatorio();//verde
+        IEstrategia jugador2 = new MaxMin(3);//azul
         Tablero jugada = null;
 
         long fin = System.currentTimeMillis() + 300000;

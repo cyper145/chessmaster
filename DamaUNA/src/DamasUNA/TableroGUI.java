@@ -19,14 +19,14 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
     private char vez;
     
 
-    public TableroGUI(char vez) {
+    public TableroGUI(char vez, String titulo) {
 
         super("Test", true, true);
 
         int lin;
         int col;
         this.vez=vez;
-        setTitle("Juego de Damas");
+        setTitle(titulo);
 
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -213,5 +213,32 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
 		casa[fila][columna].setDama(false);
 		casa[fila][columna].setForeground(casa[fila][columna].getBackground());
 		
+    }
+    public int [][] getIntTable()
+    {
+        int [][] table= new int [8][8];
+        for (int i = 0; i < table.length; i++) 
+        {
+            for (int j = 0; j < table.length; j++) {
+                Casa actual= this.casa[i][j];
+                if(this.tabuleiro[i][j]=='A')
+                {
+                    if(actual.isDama())
+                        table[i][j]=2;
+                    else
+                        table[i][j]=1;
+                }else if(this.tabuleiro[i][j]=='B')
+                {
+                    if(actual.isDama())
+                        table[i][j]=-2;
+                    else
+                        table[i][j]=-1;
+                }
+                    
+                
+            }
+            
+        }
+        return table;
     }
 }
