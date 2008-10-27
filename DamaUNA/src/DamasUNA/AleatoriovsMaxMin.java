@@ -39,21 +39,26 @@ public class AleatoriovsMaxMin extends Thread{
 
         //IEstrategia jugador1 = new Aleatorio();
         IEstrategia jugador1 = new Aleatorio();//verde
-        IEstrategia jugador2 = new MaxMin(3);//azul
+        IEstrategia jugador2 = new MaxMin(5);//azul
         Tablero jugada = null;
 
         long fin = System.currentTimeMillis() + 300000;
         while (true) {
 
             table.setTurnoBlancas(true);
-            if (table.tieneFichasEnTablero() != 0) {
+            if (table.cantidadFichasDelTurno() != 0) {
                 Tablero aux = new Tablero(matTablero);
                 aux.setTurnoBlancas(true);
+                
+                int cant1=aux.cantidadTotalPiezas();
+                
                 jugada = jugador1.jugar(aux);
                 if (jugada == null) {
                     System.out.println(" 1 Ha ganado el Jugador con fichas negras");
                     break;
                 } else {
+                    int cant2= jugada.cantidadTotalPiezas();
+                    int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
                     matTablero = jugada.getTablero();
@@ -68,7 +73,16 @@ public class AleatoriovsMaxMin extends Thread{
                         System.out.println("Jugó negras");
                     }
                     System.out.println(table.toString());
-
+                    
+                     //Prueba de consistencia....
+                    if(ctotal<0)
+                    {
+                        System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+                    }
+                    else if(ctotal!=jugada.VectorDeFichasComidas.size())
+                    {
+                        System.out.println("Desaparecieron fichas");
+                    }
                     //Desde aca vamos a usar la interfaz grafica...
 
                     //Hacemos el movimiento dependiendo si se comieron piezas o si solo se movio una.
@@ -113,14 +127,19 @@ public class AleatoriovsMaxMin extends Thread{
 
 
 
-            if (table.tieneFichasEnTablero() != 0) {
+            if (table.cantidadFichasDelTurno() != 0) {
                 Tablero aux = new Tablero(matTablero);
                 aux.setTurnoBlancas(false);
+                
+                int cant1=aux.cantidadTotalPiezas();
                 jugada = jugador2.jugar(aux);
+                
                 if (jugada == null) {
                     System.out.println(" 3 Ha ganado el Jugador con fichas blancas");
                     break;
                 } else {
+                    int cant2= jugada.cantidadTotalPiezas();
+                    int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
                     matTablero = jugada.getTablero();
@@ -136,6 +155,15 @@ public class AleatoriovsMaxMin extends Thread{
                     }
                     System.out.println(table.toString());
 
+                     //Prueba de consistencia....
+                    if(ctotal<0)
+                    {
+                        System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+                    }
+                    else if(ctotal!=jugada.VectorDeFichasComidas.size())
+                    {
+                        System.out.println("Desaparecieron fichas");
+                    }
                     //Desde aca vamos a usar la interfaz grafica...
 
                     //Hacemos el movimiento dependiendo si se comieron piezas o si solo se movio una.

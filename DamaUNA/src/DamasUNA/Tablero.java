@@ -114,22 +114,7 @@ public class Tablero implements Cloneable {
         else
             this.Turno=true;
     }
-    /**
-     * Se utiliza para la estrategia Aleatoria, genera un movimiento aleatorio.
-     * Seleccionando un ficha de forma aleatoria y generando sucesores de esa ficha.
-     */
-    public void GeneraradorAleatorio()
-    {
-         this.GenerarSucesores(true);
-    }
-    
-    /**
-     * Genera TODOS los Sucesores posibles para las otras estrategias.
-     */
-    public void GenerarSucesores()
-    {
-        this.GenerarSucesores(false);
-    }
+   
 
     /**
      * Genera todos los posibles estados sucesores que puede tener un 
@@ -137,7 +122,7 @@ public class Tablero implements Cloneable {
      * si es que no se pueden generar nuevos sucesores.
      *
      */
-    public void GenerarSucesores(boolean esAleatorio) 
+    public void GenerarSucesores() 
     {
         int newLevel=this.Nivel+1;
         boolean esUnaComedora=false;
@@ -152,19 +137,14 @@ public class Tablero implements Cloneable {
                     //Si la ficha es del turno creamos los sucesores.
                     if (f1.esFichaBlanca == this.Turno) 
                     {
-                        int v = 0;
-                        if (esAleatorio) {
-                            v = (int) (Math.random() * 2);
-                        }
-                        if (v == 0) 
-                        {
-                            // Sucesores generados por comer piezas
+                       
+                             // Sucesores generados por comer piezas
                             this.cantidadPiezasComidas = 0;
                             this.estadoPiezasComidas.clear();//Limpio el vector estatico.
                             f1.actualizarPosVieja();
                             if (this.puedeComer(f1)) {
                                 esUnaComedora = true;
-                                
+                                this.Sucesores.clear();
                                 this.ComerMayorCant(f1, 0, new Vector());
                                 //Si hay algo de piezas comidas, lo agrego como sucesores.
                                 for (int k = 0; k < this.estadoPiezasComidas.size(); k++) {
@@ -186,7 +166,7 @@ public class Tablero implements Cloneable {
                                 }
 
                             }
-                        }
+                        
                         
                       
                     }
@@ -245,7 +225,7 @@ public class Tablero implements Cloneable {
 
         }
 
-        this.puntaje=this.VectorDeFichasComidas.size()*sumaPonderada + sumaPonderada;
+        this.puntaje=this.cantidadFichasDelTurno()*sumaPonderada + sumaPonderada;
     }
 
    
@@ -840,11 +820,12 @@ public class Tablero implements Cloneable {
             }
         }
     }
+     
     /**
-     * Verifica la cantidad de fichas que existen en tablero.
+     * Verifica la cantidad de fichas blancas o negras que existen en tablero.
      * @return la cantidad de fichas que tiene al que juega en este estado.
      */
-    public int tieneFichasEnTablero() {
+    public int cantidadFichasDelTurno() {
         int con = 0;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -875,6 +856,19 @@ public class Tablero implements Cloneable {
         return clon;
     }
 
-   
+   public int cantidadTotalPiezas()
+   {
+       int con = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if ((j + i) % 2 == 0) {
+                    if (this.Tabla[i][j] != 0) {
+                        con++;
+                    }
+                }
+            }
+        }
+        return con;
+   }
             
 }

@@ -40,20 +40,25 @@ public class AlfaBetaVsMaxmin extends Thread{
         //IEstrategia jugador1 = new Aleatorio();
         IEstrategia jugador1 = new AlfaBeta(4);//verde
         IEstrategia jugador2 = new MaxMin(2);//azul
-        Tablero jugada = null;
+        
 
         long fin = System.currentTimeMillis() + 300000;
         while (true) {
 
             table.setTurnoBlancas(true);
-            if (table.tieneFichasEnTablero() != 0) {
+            if (table.cantidadFichasDelTurno() != 0) {
                 Tablero aux = new Tablero(matTablero);
                 aux.setTurnoBlancas(true);
-                jugada = jugador1.jugar(aux);
+                int cant1=aux.cantidadTotalPiezas();
+                Tablero jugada  = jugador1.jugar(aux);
+                
+                
                 if (jugada == null) {
-                    System.out.println(" 1 Ha ganado el Jugador con fichas negras");
+                    System.out.println(" 1 Ha ganado el Jugador con fichas azules");
                     break;
                 } else {
+                    int cant2= jugada.cantidadTotalPiezas();
+                    int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
                     matTablero = jugada.getTablero();
@@ -63,12 +68,20 @@ public class AlfaBetaVsMaxmin extends Thread{
                     //Desde aca muestra se hace para mostrar en la consola
 
                     if (table.getTurnoBlancas()) {
-                        System.out.println("Jugó blancas");
+                        System.out.println("Jugó verdes");
                     } else {
-                        System.out.println("Jugó negras");
+                        System.out.println("Jugó azules");
                     }
                     System.out.println(table.toString());
-
+                    if(ctotal<0)
+                    {
+                        System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+                    }
+                    else if(ctotal!=jugada.VectorDeFichasComidas.size())
+                    {
+                        System.out.println("Desaparecieron fichas");
+                    }
+                    
                     //Desde aca vamos a usar la interfaz grafica...
 
                     //Hacemos el movimiento dependiendo si se comieron piezas o si solo se movio una.
@@ -104,7 +117,7 @@ public class AlfaBetaVsMaxmin extends Thread{
 
                 }
             } else {
-                System.out.println(" 2 Ha ganado el Jugador con fichas negras");
+                System.out.println(" 2 Ha ganado el Jugador con fichas azul");
                 break;
             }
 
@@ -113,14 +126,19 @@ public class AlfaBetaVsMaxmin extends Thread{
 
 
 
-            if (table.tieneFichasEnTablero() != 0) {
+            if (table.cantidadFichasDelTurno() != 0) {
                 Tablero aux = new Tablero(matTablero);
                 aux.setTurnoBlancas(false);
-                jugada = jugador2.jugar(aux);
+                int cant1=aux.cantidadTotalPiezas();
+                Tablero jugada  = jugador2.jugar(aux);
+                
+                
                 if (jugada == null) {
-                    System.out.println(" 3 Ha ganado el Jugador con fichas blancas");
+                    System.out.println(" 3 Ha ganado el Jugador con fichas verdes");
                     break;
                 } else {
+                    int cant2= jugada.cantidadTotalPiezas();
+                    int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
                     matTablero = jugada.getTablero();
@@ -135,7 +153,14 @@ public class AlfaBetaVsMaxmin extends Thread{
                         System.out.println("Jugó negras");
                     }
                     System.out.println(table.toString());
-
+                    if(ctotal<0)
+                    {
+                        System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+                    }
+                    else if(ctotal!=jugada.VectorDeFichasComidas.size())
+                    {
+                        System.out.println("Desaparecieron fichas");
+                    }
                     //Desde aca vamos a usar la interfaz grafica...
 
                     //Hacemos el movimiento dependiendo si se comieron piezas o si solo se movio una.
@@ -171,7 +196,7 @@ public class AlfaBetaVsMaxmin extends Thread{
                     jugada = null;
                 }
             } else {
-                System.out.println(" 4 Ha ganado el Jugador con fichas blancas");
+                System.out.println(" 4 Ha ganado el Jugador con fichas verdes");
                 break;
             }
         }

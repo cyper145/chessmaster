@@ -70,7 +70,7 @@ public class Main {
         while(System.currentTimeMillis() <= fin){            
             
             table.setTurnoBlancas(true);
-            if(table.tieneFichasEnTablero() != 0){
+            if(table.cantidadFichasDelTurno() != 0){
                 Tablero aux = new Tablero(tablero);
                 aux.setTurnoBlancas(true);
                 time1 = System.nanoTime()/1000.0;
@@ -100,7 +100,7 @@ public class Main {
             System.out.println(table.toString());
             table.setTurnoBlancas(false);
                         
-            if(table.tieneFichasEnTablero() != 0){
+            if(table.cantidadFichasDelTurno() != 0){
                 Tablero aux = new Tablero(tablero);
                 aux.setTurnoBlancas(false);
                 time1 = System.nanoTime()/1000.0;
