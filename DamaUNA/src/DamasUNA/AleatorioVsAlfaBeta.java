@@ -7,6 +7,7 @@ package DamasUNA;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,6 +16,7 @@ import javax.swing.JDesktopPane;
 public class AleatorioVsAlfaBeta extends Thread{
 
     private TableroGUI ITablero;
+    public int VELOCIDAD=5;
 
     public AleatorioVsAlfaBeta() {
         this.ITablero= new TableroGUI('A', "Aleatorio Vs Alfa-Beta");
@@ -54,7 +56,10 @@ public class AleatorioVsAlfaBeta extends Thread{
                 
                 jugada = jugador1.jugar(aux);
                 if (jugada == null) {
-                    System.out.println(" 1 Ha ganado el Jugador con fichas negras");
+                    System.out.println(" 1 Ha ganado el Jugador con fichas azules");
+                    JOptionPane.showMessageDialog( this.ITablero,
+		                	"Alfa-Beta ha ganado!, aleatorio se ha queda kure'i...",
+		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );	
                     break;
                 } else {
                     int cant2= jugada.cantidadTotalPiezas();
@@ -91,7 +96,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                         //Ubicamos a la pieza en su nueva posicion luego de comer piezas...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -99,7 +104,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                        
 
                         for (int i = 0; i < jugada.VectorDeFichasComidas.size(); i++) {
-                            t = System.currentTimeMillis() + 3000;
+                            t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                             while (t > System.currentTimeMillis());
                             Ficha comida = (Ficha) jugada.VectorDeFichasComidas.get(i);
                             this.ITablero.comerPieza(comida.getPos().fila, comida.getPos().columna);
@@ -110,7 +115,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                         //Ubicamos a la pieza en su nueva posicion...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -119,7 +124,10 @@ public class AleatorioVsAlfaBeta extends Thread{
 
                 }
             } else {
-                System.out.println(" 2 Ha ganado el Jugador con fichas negras");
+                System.out.println(" 2 Ha ganado el Jugador con fichas azules");
+                JOptionPane.showMessageDialog( this.ITablero,
+		                	"Alfa-Beta ha ganado!, Aleatorio ya no tiene piezas..",
+		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
                 break;
             }
 
@@ -135,7 +143,10 @@ public class AleatorioVsAlfaBeta extends Thread{
                 jugada = jugador2.jugar(aux);
                 
                 if (jugada == null) {
-                    System.out.println(" 3 Ha ganado el Jugador con fichas blancas");
+                    System.out.println(" 3 Ha ganado el Jugador con fichas verdes");
+                    JOptionPane.showMessageDialog( this.ITablero,
+		                	"Aleatorio ha ganado, Alfa-Beta ya no puede moverse!",
+		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
                     break;
                 } else {
                     int cant2= jugada.cantidadTotalPiezas();
@@ -169,7 +180,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                         //Ubicamos a la pieza en su nueva posicion luego de comer piezas...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                        this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -178,7 +189,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                         
 
                         for (int i = 0; i < jugada.VectorDeFichasComidas.size(); i++) {
-                            t = System.currentTimeMillis() + 3000;
+                            t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                             while (t > System.currentTimeMillis());
                             Ficha comida = (Ficha) jugada.VectorDeFichasComidas.get(i);
                             this.ITablero.comerPieza(comida.getPos().fila, comida.getPos().columna);
@@ -189,7 +200,7 @@ public class AleatorioVsAlfaBeta extends Thread{
                         //Ubicamos a la pieza en su nueva posicion...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -197,7 +208,10 @@ public class AleatorioVsAlfaBeta extends Thread{
                     jugada = null;
                 }
             } else {
-                System.out.println(" 4 Ha ganado el Jugador con fichas blancas");
+                System.out.println(" 4 Ha ganado el Jugador con fichas verdes");
+                JOptionPane.showMessageDialog( this.ITablero,
+		                	"Aleatorio ha ganado, Alfa-Beta ya no tiene piezas!",
+		                    "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
                 break;
             }
         }

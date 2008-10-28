@@ -15,7 +15,7 @@ import javax.swing.JDesktopPane;
 public class AleatoriovsMaxMin extends Thread{
 
     private TableroGUI ITablero;
-
+    public int VELOCIDAD=5;
     public AleatoriovsMaxMin() {
         this.ITablero= new TableroGUI('A', "Aleatorio Vs MaxMin");
     }
@@ -42,7 +42,7 @@ public class AleatoriovsMaxMin extends Thread{
         IEstrategia jugador2 = new MaxMin(5);//azul
         Tablero jugada = null;
 
-        long fin = System.currentTimeMillis() + 300000;
+       
         while (true) {
 
             table.setTurnoBlancas(true);
@@ -90,7 +90,7 @@ public class AleatoriovsMaxMin extends Thread{
                         //Ubicamos a la pieza en su nueva posicion luego de comer piezas...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -98,7 +98,7 @@ public class AleatoriovsMaxMin extends Thread{
                        
 
                         for (int i = 0; i < jugada.VectorDeFichasComidas.size(); i++) {
-                            t = System.currentTimeMillis() + 3000;
+                            t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                             while (t > System.currentTimeMillis());
                             Ficha comida = (Ficha) jugada.VectorDeFichasComidas.get(i);
                             this.ITablero.comerPieza(comida.getPos().fila, comida.getPos().columna);
@@ -109,7 +109,7 @@ public class AleatoriovsMaxMin extends Thread{
                         //Ubicamos a la pieza en su nueva posicion...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -171,7 +171,7 @@ public class AleatoriovsMaxMin extends Thread{
                         //Ubicamos a la pieza en su nueva posicion luego de comer piezas...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                        this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
@@ -180,7 +180,7 @@ public class AleatoriovsMaxMin extends Thread{
                         
 
                         for (int i = 0; i < jugada.VectorDeFichasComidas.size(); i++) {
-                            t = System.currentTimeMillis() + 3000;
+                            t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                             while (t > System.currentTimeMillis());
                             Ficha comida = (Ficha) jugada.VectorDeFichasComidas.get(i);
                             this.ITablero.comerPieza(comida.getPos().fila, comida.getPos().columna);
@@ -191,7 +191,7 @@ public class AleatoriovsMaxMin extends Thread{
                         //Ubicamos a la pieza en su nueva posicion...
                         Posicion pinicial = jugada.fichaMovida.getPosAnterior();
                         Posicion pfinal = jugada.fichaMovida.getPos();
-                        long t = System.currentTimeMillis() + 3000;
+                        long t = System.currentTimeMillis() + 5000/this.VELOCIDAD;
                         while (t > System.currentTimeMillis());
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();

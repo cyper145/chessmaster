@@ -39,6 +39,9 @@ public class MaxMin extends IEstrategia {
         this.numNodos++;
         if(this.testTerminal(estado))
         {
+            //Cambiamos de turno, por que en el nivelLimite sus hijos tienen su turno opuesto.
+            // Y el costo se halla siempre en el nivelLimite+1. 
+            estado.CambiarTurno();
             estado.CalcularValorDeEstado();
             return estado.puntaje;
         }
@@ -62,6 +65,7 @@ public class MaxMin extends IEstrategia {
         this.numNodos++;
         if(this.testTerminal(estado))
         {
+            estado.CambiarTurno();
             estado.CalcularValorDeEstado();
             return estado.puntaje;
         }

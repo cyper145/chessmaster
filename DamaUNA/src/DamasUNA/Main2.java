@@ -23,29 +23,37 @@ public class Main2 {
         // TODO code application logic here
         //                   0  1   2   3  4  5  6  7
         int tablero [][]=  {{1, 0 , 0 , 0, 1, 0, 0, 0},//0
-                           { 0, 1 , 0 , 1, 0, 1, 0, 1},//1
-                           { 1, 0 , 1 , 0, 0, 0, 1, 0},//2
-                           { 0, 0 , 0 , 1, 0, 0, 0, 0},//3
-                           { 0, 0 ,-2 , 0, 0, 0, 0, 0},//4
-                           { 0, 0 , 0 ,-1, 0, 0, 0, 0},//5
+                           { 0, 1 , 0 , 1, 0, 0, 0, 1},//1
+                           { 1, 0 , 0 , 0, 1, 0, 0, 0},//2
+                           { 0, 0 , 0 , 0, 0, 1, 0, 0},//3
+                           { 0, 0 ,-1 , 0, 0, 0, 0, 0},//4
+                           { 0, 1 , 0 ,-1, 0, 0, 0, 0},//5
                            { 0, 0 , 0 , 0, 0, 0,-1, 0},//6
                            { 0,-1 , 0 ,-1, 0, 0, 0,-1}};//7
-                           
-        Tablero table= new Tablero(tablero);
-        table.setTurnoBlancas(false);
-        IEstrategia jugador2 = new AlfaBeta(3);
-        IEstrategia jugador1 = new MaxMin(3);
-        Tablero table2=jugador2.jugar(table);
-        System.out.println(table.toString());
-        System.out.println("Jugada Alfa Beta");
-        System.out.println(table2.toString());
-        System.out.println("Cantidad de nodos AlfaBeta="+jugador2.numNodos);
-        System.out.println("Jugada MaxMin");
-        Tablero table1=jugador1.jugar(table);
-        System.out.println(table1.toString());
-        System.out.println("Cantidad de nodos MaxMin="+jugador1.numNodos);
+              
+           Tablero table= new Tablero(tablero);
+           table.setTurnoBlancas(false);
+           IEstrategia jugador2 = new AlfaBeta(3);
+           Tablero table2=jugador2.jugar(table);
+           System.out.println("------------------------------------------------------");
+           System.out.println(table.toString());
+           System.out.println(table2.toString());
+          // System.out.println(table2.toString());
+//        Tablero table= new Tablero(tablero);
+//        table.setTurnoBlancas(false);
+//        IEstrategia jugador2 = new AlfaBeta(3);
+//        IEstrategia jugador1 = new MaxMin(3);
+//        Tablero table2=jugador2.jugar(table);
+//        System.out.println(table.toString());
+//        System.out.println("Jugada Alfa Beta");
+//        System.out.println(table2.toString());
+//        System.out.println("Cantidad de nodos AlfaBeta="+jugador2.numNodos);
+//        System.out.println("Jugada MaxMin");
+//        Tablero table1=jugador1.jugar(table);
+//        System.out.println(table1.toString());
+//        System.out.println("Cantidad de nodos MaxMin="+jugador1.numNodos);
         
-        System.out.println("------------------------------------------------------");
+        
         
         
 //        table.ComerMayorCant(table.getFicha(4, 4),0);
