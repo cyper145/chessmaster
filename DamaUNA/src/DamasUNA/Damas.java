@@ -10,7 +10,7 @@ public class Damas extends JFrame {
     
 	public Damas() {
 		
-		super("Juego de Damas");
+		super("Juego de Damas - Inteligencia Artificial - Ingenieria en Informatica(FP-UNA)");
 		
 		JMenuBar menu = new JMenuBar();
 		setJMenuBar(menu);
@@ -30,10 +30,12 @@ public class Damas extends JFrame {
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
 				                        
-                         
-                        AlfaBetaVsMaxmin estrategia1= new AlfaBetaVsMaxmin();
-                        estrategia1.inicializar(mdiDamas);
-                        estrategia1.start();
+                        AlfaBeta estrategia1= new AlfaBeta(4);
+                        MaxMin estrategia2= new MaxMin(3);
+                                    
+                        MaquinaVsMaquina modo= new MaquinaVsMaquina(estrategia1, estrategia2,"AlfaBeta", "MaxMin");
+                        modo.inicializar(mdiDamas);
+                        modo.start();
                 
                 
                                 }
@@ -46,9 +48,13 @@ public class Damas extends JFrame {
              AleatoriavsMinimax.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				AleatoriovsMaxMin estrategia1= new AleatoriovsMaxMin();
-                        estrategia1.inicializar(mdiDamas);
-                        estrategia1.start();
+				
+                                    Aleatorio estrategia1= new Aleatorio();
+                                MaxMin estrategia2= new MaxMin(3);
+                                    
+                        MaquinaVsMaquina modo= new MaquinaVsMaquina(estrategia1, estrategia2,"Aleatoria", "MaxMin");
+                        modo.inicializar(mdiDamas);
+                        modo.start();
                         
                 
 		
@@ -63,9 +69,12 @@ public class Damas extends JFrame {
              AleatoriavsAlfaBeta.addActionListener(
                      new ActionListener(){
 				public void actionPerformed( ActionEvent e){
-				AleatorioVsAlfaBeta estrategia1= new AleatorioVsAlfaBeta();
-                        estrategia1.inicializar(mdiDamas);
-                        estrategia1.start();
+				    Aleatorio estrategia1= new Aleatorio();
+                                AlfaBeta estrategia2= new AlfaBeta(3);
+                                    
+                        MaquinaVsMaquina modo= new MaquinaVsMaquina(estrategia1, estrategia2,"Aleatoria" ,"AlfaBeta");
+                        modo.inicializar(mdiDamas);
+                        modo.start();
                         
                
 		

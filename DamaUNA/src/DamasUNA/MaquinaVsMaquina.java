@@ -13,13 +13,21 @@ import javax.swing.JOptionPane;
  *
  * @author Ramon
  */
-public class AleatorioVsAlfaBeta extends Thread{
+public class MaquinaVsMaquina extends Thread{
 
     private TableroGUI ITablero;
     public int VELOCIDAD=5;
+    private IEstrategia jugador1;
+    private IEstrategia jugador2;
+    private String nameE1;
+    private String nameE2;
 
-    public AleatorioVsAlfaBeta() {
-        this.ITablero= new TableroGUI('A', "Aleatorio Vs Alfa-Beta");
+    public MaquinaVsMaquina(IEstrategia j1,IEstrategia j2, String nameE1, String nameE2) {
+        this.ITablero= new TableroGUI('A', nameE1+"(Verde)Vs"+nameE2+"(azul)");
+        this.jugador1=j1;
+        this.jugador2=j2;
+        this.nameE1=nameE1;
+        this.nameE2=nameE2;
     }
 
     
@@ -39,9 +47,7 @@ public class AleatorioVsAlfaBeta extends Thread{
         System.out.println(table.toString());
         System.out.println("------------------------------------------------------");
 
-        //IEstrategia jugador1 = new Aleatorio();
-        IEstrategia jugador1 = new Aleatorio();//verde
-        IEstrategia jugador2 = new AlfaBeta(3);//azul
+        
         Tablero jugada = null;
 
         long fin = System.currentTimeMillis() + 300000;
@@ -58,8 +64,8 @@ public class AleatorioVsAlfaBeta extends Thread{
                 if (jugada == null) {
                     System.out.println(" 1 Ha ganado el Jugador con fichas azules");
                     JOptionPane.showMessageDialog( this.ITablero,
-		                	"Alfa-Beta ha ganado!, aleatorio se ha queda kure'i...",
-		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );	
+		                	this.nameE2+" ha ganado!, "+ this.nameE1+ " se ha quedado kure'i...",
+		                     "Fin del Juego-"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );	
                     break;
                 } else {
                     int cant2= jugada.cantidadTotalPiezas();
@@ -126,8 +132,8 @@ public class AleatorioVsAlfaBeta extends Thread{
             } else {
                 System.out.println(" 2 Ha ganado el Jugador con fichas azules");
                 JOptionPane.showMessageDialog( this.ITablero,
-		                	"Alfa-Beta ha ganado!, Aleatorio ya no tiene piezas..",
-		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
+		                	this.nameE2+" ha ganado!, "+this.nameE1+" ya no tiene piezas..",
+		                     "Fin del Juego-"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );
                 break;
             }
 
@@ -145,8 +151,8 @@ public class AleatorioVsAlfaBeta extends Thread{
                 if (jugada == null) {
                     System.out.println(" 3 Ha ganado el Jugador con fichas verdes");
                     JOptionPane.showMessageDialog( this.ITablero,
-		                	"Aleatorio ha ganado, Alfa-Beta ya no puede moverse!",
-		                     "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
+		                	this.nameE1+" ha ganado, "+this.nameE2+" ya no puede moverse!",
+		                     "Fin del Juego-"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );
                     break;
                 } else {
                     int cant2= jugada.cantidadTotalPiezas();
@@ -210,8 +216,8 @@ public class AleatorioVsAlfaBeta extends Thread{
             } else {
                 System.out.println(" 4 Ha ganado el Jugador con fichas verdes");
                 JOptionPane.showMessageDialog( this.ITablero,
-		                	"Aleatorio ha ganado, Alfa-Beta ya no tiene piezas!",
-		                    "Fin del Juego-Aleatorio Vs Alfa-Beta ", JOptionPane.PLAIN_MESSAGE );
+		                	this.nameE1+" ha ganado, "+this.nameE2+ " ya no tiene piezas!",
+		                    "Fin del Juego"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );
                 break;
             }
         }
