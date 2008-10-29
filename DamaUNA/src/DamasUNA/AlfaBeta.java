@@ -59,8 +59,8 @@ public class AlfaBeta extends IEstrategia {
             s.setTurnoBlancas(!estado.getTurnoBlancas());
             valor= Math.min(valor, this.ValorMax(s));
             
-            System.out.println("El puntaje es..."+s.puntaje+"y el nivel es..."+s.getNivel());
-            System.out.println(s.toString());
+            //System.out.println("El puntaje es..."+s.puntaje+"y el nivel es..."+s.getNivel());
+            //System.out.println(s.toString());
             
             if(valor < estado.alfa || valor == estado.alfa )
             {
@@ -94,8 +94,8 @@ public class AlfaBeta extends IEstrategia {
             s.setTurnoBlancas(!estado.getTurnoBlancas());
             valor= Math.max(valor, this.ValorMin(s));
             
-            System.out.println("El puntaje es..."+s.puntaje+"y el nivel es..."+s.getNivel());
-            System.out.println(s.toString());
+            //System.out.println("El puntaje es..."+s.puntaje+"y el nivel es..."+s.getNivel());
+            //System.out.println(s.toString());
             
             if(valor > estado.beta || valor == estado.beta )
             {

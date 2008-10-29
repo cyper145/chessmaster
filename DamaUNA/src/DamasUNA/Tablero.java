@@ -429,9 +429,10 @@ public class Tablero implements Cloneable {
 
                                     //Desasemos lo que hicimos.
                                     this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = comida.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                     comedora.mover(pos);
                                     this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
-                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                    
                                 }
                             }
                         }
@@ -477,9 +478,10 @@ public class Tablero implements Cloneable {
 
                                     //Desasemos lo que hicimos.
                                     this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = comida.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                     comedora.mover(pos);
                                     this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
-                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                    
                                 }
                             }
                         }
@@ -523,9 +525,10 @@ public class Tablero implements Cloneable {
 
                                     //Desasemos lo que hicimos.
                                     this.Tabla[posAux.fila - (valor)][posAux.columna - (valor)] = comida.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                     comedora.mover(pos);
                                     this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
-                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                    
                                 }
                         
                         
@@ -568,9 +571,10 @@ public class Tablero implements Cloneable {
 
                                     //Desasemos lo que hicimos.
                                     this.Tabla[posAux.fila - (valor)][posAux.columna + (valor)] = comida.getColorFicha();
+                                    this.Tabla[posAux.fila][posAux.columna] = 0;
                                     comedora.mover(pos);
                                     this.Tabla[pos.fila][pos.columna] = comedora.getColorFicha();
-                                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                                    
                                 }
                             }
                         }
@@ -698,9 +702,10 @@ public class Tablero implements Cloneable {
                         posAux.columna = posAux.columna + (valor);
                       
                     }
-                     movedora.mover(pos);
+                    this.Tabla[posAux.fila-(valor)][posAux.columna-(valor)] = 0; 
+                    movedora.mover(pos);
                      this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
-                     this.Tabla[posAux.fila-(valor)][posAux.columna-(valor)] = 0;
+                     
                      
                 }
                
@@ -726,9 +731,13 @@ public class Tablero implements Cloneable {
                         posAux.fila = posAux.fila + (valor);
                         posAux.columna = posAux.columna - (valor);
                     }
+                    //Dejamos todo como estaba... Primero borramos donde se le puso por ultima vez..
+                    
+                    this.Tabla[posAux.fila-(valor)][posAux.columna+(valor)] = 0;
+                    //Luego le volvemos a poner en el lugar inicial que estaba...
                     movedora.mover(pos);
                     this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
-                    this.Tabla[posAux.fila-(valor)][posAux.columna+(valor)] = 0;
+                    
                 }
                 
                 valor = valor * (-1);
@@ -756,9 +765,10 @@ public class Tablero implements Cloneable {
                     sucesores.add(table);
                     
                     //Le retorno a la movedora en su posicion inicial.
+                    this.Tabla[posAux.fila][posAux.columna] = 0;
                     movedora.mover(pos);
                     this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
-                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                    
                 }
             }
             //Ver si se puede mover a la izquierda.
@@ -777,9 +787,10 @@ public class Tablero implements Cloneable {
                     table.fichaMovida=movedora.clonar();
                     sucesores.add(table);
 
+                    this.Tabla[posAux.fila][posAux.columna] = 0;
                     movedora.mover(pos);
                     this.Tabla[pos.fila][pos.columna] = movedora.getColorFicha();
-                    this.Tabla[posAux.fila][posAux.columna] = 0;
+                    
                 }
             }
 
@@ -809,12 +820,12 @@ public class Tablero implements Cloneable {
 
         for (int j = 0; j < 8; j++) {
             if ((j + 0) % 2 == 0) {
-                if (this.Tabla[0][j] != 0 && this.Tabla[0][j]< 0) {
+                if (this.Tabla[0][j] == -1 ) {
                     Tabla[0][j]=-2;
                 }
             }
             if ((j + 7) % 2 == 0) {
-                if (this.Tabla[7][j] != 0 && this.Tabla[7][j]> 0) {
+                if (this.Tabla[7][j] == 1) {
                     Tabla[7][j]=2;
                 }
             }
@@ -870,5 +881,17 @@ public class Tablero implements Cloneable {
         }
         return con;
    }
+
+    void limpiarEstado() {
+        this.Nivel=0;
+        this.Sucesores.clear();
+        this.VectorDeFichasComidas.clear();
+        this.alfa= Double.NEGATIVE_INFINITY;
+        this.beta= Double.POSITIVE_INFINITY;
+        this.cantidadPiezasComidas=0;
+        this.estadoPiezasComidas.clear();
+        this.fichaMovida=null;
+        this.puntaje=0;
+    }
             
 }

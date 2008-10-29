@@ -22,18 +22,18 @@ public class Main2 {
     public static void main(String[] args) {
         // TODO code application logic here
         //                   0  1   2   3  4  5  6  7
-        int tablero [][]=  {{1, 0 , 0 , 0, 1, 0, 0, 0},//0
-                           { 0, 1 , 0 , 1, 0, 0, 0, 1},//1
-                           { 1, 0 , 0 , 0, 1, 0, 0, 0},//2
-                           { 0, 0 , 0 , 0, 0, 1, 0, 0},//3
-                           { 0, 0 ,-1 , 0, 0, 0, 0, 0},//4
-                           { 0, 1 , 0 ,-1, 0, 0, 0, 0},//5
-                           { 0, 0 , 0 , 0, 0, 0,-1, 0},//6
-                           { 0,-1 , 0 ,-1, 0, 0, 0,-1}};//7
+        int tablero [][]=  {{0, 9 , 0 , 9, 0, 9, 0, 9},//0
+                           { 9, 0 , 9 , 0, 9, 0, 9, 1},//1
+                           { 1, 9 , 0 , 9, 0, 9, 1, 9},//2
+                           { 9, 1 , 9 ,-2, 9, 1, 9, 0},//3
+                           {-1, 9 , 0 , 9, 0, 9, 0, 9},//4
+                           { 9,-1 , 9 , 0, 9, 0, 9,-1},//5
+                           { 0, 9 , 0 , 9, 0, 9, 0, 9},//6
+                           { 9, 0 , 9 , 2, 9, 0, 9, 0}};//7
               
            Tablero table= new Tablero(tablero);
-           table.setTurnoBlancas(false);
-           IEstrategia jugador2 = new AlfaBeta(3);
+           table.setTurnoBlancas(true);
+           IEstrategia jugador2 = new MaxMin(3);
            Tablero table2=jugador2.jugar(table);
            System.out.println("------------------------------------------------------");
            System.out.println(table.toString());

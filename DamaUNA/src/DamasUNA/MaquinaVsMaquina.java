@@ -43,24 +43,16 @@ public class MaquinaVsMaquina extends Thread{
             {-1, 0, -1, 0, -1, 0, -1, 0},//6
             {0, -1, 0, -1, 0, -1, 0, -1}};//7
 
-        Tablero table = new Tablero(matTablero);
-        System.out.println(table.toString());
-        System.out.println("------------------------------------------------------");
-
+        Tablero jugada = new Tablero(matTablero);
+        jugada.setTurnoBlancas(true);
         
-        Tablero jugada = null;
-
         long fin = System.currentTimeMillis() + 300000;
         while (true) {
 
-            table.setTurnoBlancas(true);
-            if (table.cantidadFichasDelTurno() != 0) {
-                Tablero aux = new Tablero(matTablero);
-                aux.setTurnoBlancas(true);
+            if (jugada!= null && jugada.cantidadFichasDelTurno() != 0) {
+                int cant1=jugada.cantidadTotalPiezas();
+                jugada = jugador1.jugar(jugada);
                 
-                int cant1=aux.cantidadTotalPiezas();
-                
-                jugada = jugador1.jugar(aux);
                 if (jugada == null) {
                     System.out.println(" 1 Ha ganado el Jugador con fichas azules");
                     JOptionPane.showMessageDialog( this.ITablero,
@@ -68,22 +60,20 @@ public class MaquinaVsMaquina extends Thread{
 		                     "Fin del Juego-"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );	
                     break;
                 } else {
+                    
                     int cant2= jugada.cantidadTotalPiezas();
                     int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
-                    matTablero = jugada.getTablero();
-                    table.Tabla = jugada.clonarTabla(jugada.Tabla);
-                    table.setTurnoBlancas(false);
-                   
+                    
                     //Desde aca muestra se hace para mostrar en la consola
 
-                    if (table.getTurnoBlancas()) {
+                    if (jugada.getTurnoBlancas()) {
                         System.out.println("Jugó blancas");
                     } else {
                         System.out.println("Jugó negras");
                     }
-                    System.out.println(table.toString());
+                    System.out.println(jugada.toString());
                     
                     //Prueba de consistencia....
                     if(ctotal<0)
@@ -126,8 +116,10 @@ public class MaquinaVsMaquina extends Thread{
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
                     }
-                     jugada = null;
-
+                    //Le toca el turno a las negras
+                    jugada.limpiarEstado();//Cero el nivel para la jugada futura...
+                    jugada.setTurnoBlancas(false);
+                     
                 }
             } else {
                 System.out.println(" 2 Ha ganado el Jugador con fichas azules");
@@ -142,11 +134,10 @@ public class MaquinaVsMaquina extends Thread{
 
 
 
-            if (table.cantidadFichasDelTurno() != 0) {
-                Tablero aux = new Tablero(matTablero);
-                aux.setTurnoBlancas(false);
-                int cant1=aux.cantidadTotalPiezas();
-                jugada = jugador2.jugar(aux);
+            if (jugada !=null && jugada.cantidadFichasDelTurno() != 0) {
+                int cant1=jugada.cantidadTotalPiezas();
+                jugada = jugador2.jugar(jugada);
+                
                 
                 if (jugada == null) {
                     System.out.println(" 3 Ha ganado el Jugador con fichas verdes");
@@ -155,22 +146,21 @@ public class MaquinaVsMaquina extends Thread{
 		                     "Fin del Juego-"+this.nameE1+"Vs"+this.nameE2, JOptionPane.PLAIN_MESSAGE );
                     break;
                 } else {
+                    
                     int cant2= jugada.cantidadTotalPiezas();
                     int ctotal=cant1-cant2;
                     //actualizar el tablero original...
                     jugada.coronarPeon();
-                    matTablero = jugada.getTablero();
-                    table.Tabla = jugada.clonarTabla(jugada.Tabla);
-                    table.setTurnoBlancas(true);
-                    
+                   
                     //Desde aca muestra se hace para mostrar en la consola
-
-                    if (table.getTurnoBlancas()) {
+                    if (jugada.getTurnoBlancas()) {
                         System.out.println("Jugó blancas");
                     } else {
                         System.out.println("Jugó negras");
                     }
-                    System.out.println(table.toString());
+                    System.out.println(jugada.toString());
+                    
+                    //Control de Consistencia...
                     if(ctotal<0)
                     {
                         System.out.println("Algo anda mal... Aparecieron nuevas piezas");
@@ -211,7 +201,8 @@ public class MaquinaVsMaquina extends Thread{
                         this.ITablero.moverPieza(pinicial.fila, pinicial.columna, pfinal.fila, pfinal.columna);
                         this.ITablero.cambiarTurno();
                     }
-                    jugada = null;
+                    jugada.limpiarEstado();//Limpio el estado de la jugada, para pasarle al adversario..
+                    jugada.setTurnoBlancas(true);                    
                 }
             } else {
                 System.out.println(" 4 Ha ganado el Jugador con fichas verdes");
