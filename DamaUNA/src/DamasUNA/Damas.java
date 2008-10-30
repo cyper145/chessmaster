@@ -31,7 +31,7 @@ public class Damas extends JFrame {
 				public void actionPerformed( ActionEvent e){
 				                        
                         AlfaBeta estrategia1= new AlfaBeta(5);
-                        MaxMin estrategia2= new MaxMin(3);
+                        MaxMin estrategia2= new MaxMin(4);
                                     
                         MaquinaVsMaquina modo= new MaquinaVsMaquina(estrategia1, estrategia2,"AlfaBeta", "MaxMin");
                         modo.inicializar(mdiDamas);

@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class MaquinaVsMaquina extends Thread {
 
     private TableroGUI ITablero;
-    public int VELOCIDAD = 5;
+    public int VELOCIDAD = 10;
     private IEstrategia jugador1;
     private IEstrategia jugador2;
     private String nameE1;
@@ -45,16 +45,31 @@ public class MaquinaVsMaquina extends Thread {
         jugada.setTurnoBlancas(true);
 
         long fin = System.currentTimeMillis() + 300000;
-        try 
-        {
+        double nodosJugador1 = 0;
+        double nodosJugador2 = 0;
+        double jugoJugador1 = 0;
+        double jugoJugador2 = 0;
+        double time1 = 0;
+        double time2 = 0;
+        double timeJugador1 = 0;
+        double timeJugador2 = 0;
+        boolean timeOver=false;
+        try {
 
 
-            while (true) {
-
+            while (!this.ITablero.salio && !timeOver) 
+            {
+                timeOver=!(fin > System.currentTimeMillis());
                 if (jugada != null && jugada.cantidadFichasDelTurno() != 0) {
                     int cant1 = jugada.cantidadTotalPiezas();
-                    jugada = jugador1.jugar(jugada);
 
+                    time1 = System.nanoTime() / 1000.0;
+                    jugada = jugador1.jugar(jugada);
+                    time2 = System.nanoTime() / 1000.0;
+                    timeJugador1 = time2 - time1;
+                    nodosJugador1 = nodosJugador1 + jugador1.numNodos;
+                    jugoJugador1++;
+                    jugador1.numNodos=0;
                     if (jugada == null) {
                         System.out.println(" 1 Ha ganado el Jugador con fichas azules");
                         JOptionPane.showMessageDialog(this.ITablero,
@@ -70,19 +85,19 @@ public class MaquinaVsMaquina extends Thread {
 
                         //Desde aca muestra se hace para mostrar en la consola
 
-                        if (jugada.getTurnoBlancas()) {
-                            System.out.println("Jugó blancas");
-                        } else {
-                            System.out.println("Jugó negras");
-                        }
-                        System.out.println(jugada.toString());
+//                        if (jugada.getTurnoBlancas()) {
+//                            System.out.println("Jugó blancas");
+//                        } else {
+//                            System.out.println("Jugó negras");
+//                        }
+//                        System.out.println(jugada.toString());
 
                         //Prueba de consistencia....
-                        if (ctotal < 0) {
-                            System.out.println("Algo anda mal... Aparecieron nuevas piezas");
-                        } else if (ctotal != jugada.VectorDeFichasComidas.size()) {
-                            System.out.println("Desaparecieron fichas");
-                        }
+//                        if (ctotal < 0) {
+//                            System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+//                        } else if (ctotal != jugada.VectorDeFichasComidas.size()) {
+//                            System.out.println("Desaparecieron fichas");
+//                        }
 
                         //Desde aca vamos a usar la interfaz grafica...
 
@@ -135,9 +150,14 @@ public class MaquinaVsMaquina extends Thread {
 
                 if (jugada != null && jugada.cantidadFichasDelTurno() != 0) {
                     int cant1 = jugada.cantidadTotalPiezas();
+
+                    time1 = System.nanoTime() / 1000.0;
                     jugada = jugador2.jugar(jugada);
-
-
+                    time2 = System.nanoTime() / 1000.0;
+                    timeJugador2 = time2 - time1;
+                    nodosJugador2 = nodosJugador2 + jugador2.numNodos;
+                    jugoJugador2++;
+                    jugador2.numNodos=0;
                     if (jugada == null) {
                         System.out.println(" 3 Ha ganado el Jugador con fichas verdes");
                         JOptionPane.showMessageDialog(this.ITablero,
@@ -152,19 +172,19 @@ public class MaquinaVsMaquina extends Thread {
                         jugada.coronarPeon();
 
                         //Desde aca muestra se hace para mostrar en la consola
-                        if (jugada.getTurnoBlancas()) {
-                            System.out.println("Jugó blancas");
-                        } else {
-                            System.out.println("Jugó negras");
-                        }
-                        System.out.println(jugada.toString());
+//                        if (jugada.getTurnoBlancas()) {
+//                            System.out.println("Jugó blancas");
+//                        } else {
+//                            System.out.println("Jugó negras");
+//                        }
+//                        System.out.println(jugada.toString());
 
                         //Control de Consistencia...
-                        if (ctotal < 0) {
-                            System.out.println("Algo anda mal... Aparecieron nuevas piezas");
-                        } else if (ctotal != jugada.VectorDeFichasComidas.size()) {
-                            System.out.println("Desaparecieron fichas");
-                        }
+//                        if (ctotal < 0) {
+//                            System.out.println("Algo anda mal... Aparecieron nuevas piezas");
+//                        } else if (ctotal != jugada.VectorDeFichasComidas.size()) {
+//                            System.out.println("Desaparecieron fichas");
+//                        }
                         //Desde aca vamos a usar la interfaz grafica...
 
                         //Hacemos el movimiento dependiendo si se comieron piezas o si solo se movio una.
@@ -208,6 +228,23 @@ public class MaquinaVsMaquina extends Thread {
                     break;
                 }
             }
+            if(timeOver)
+                JOptionPane.showMessageDialog(this.ITablero,
+                    "El juego ha terminado en EMPATE!!",
+                    "Tiempo concluido...", JOptionPane.PLAIN_MESSAGE);
+            
+            String cadena="********Estadisticas de la estrategia "+this.nameE1+ "********\n"+"El tiempo promedio que demora en retornar una jugada = " + Double.toString(timeJugador1 / jugoJugador1) + " milisegundos\n"+"La cantidad de estados promedio que visita la búsqueda = " + Double.toString(nodosJugador1 / jugoJugador1) + " estados\n\n"+"********Estadisticas de la estrategia "+this.nameE2+"********\n"+"El tiempo promedio que demora en retornar una jugada = " + Double.toString(timeJugador2 / jugoJugador2) + " milisegundos\n"+"La cantidad de estados promedio que visita la búsqueda = " + Double.toString(nodosJugador2 / jugoJugador2) + " estados\n";
+             JOptionPane.showMessageDialog(this.ITablero,
+                    cadena,
+                    "Estadistica de la Partida", JOptionPane.PLAIN_MESSAGE);
+            System.out.println("------------------------------------------------------");
+            System.out.println("********Estadisticas de la estrategia "+this.nameE1+ "(Verde)********\n");
+            System.out.println("El tiempo promedio que demora en retornar una jugada = " + timeJugador1 / jugoJugador1 + " milisegundos\n");
+            System.out.println("La cantidad de estados promedio que visita la búsqueda = " + nodosJugador1 / jugoJugador1 + " estados\n");
+            System.out.println("\n");
+            System.out.println("********Estadisticas de la estrategia "+this.nameE2+ "(Azul) ********\n");
+            System.out.println("El tiempo promedio que demora en retornar una jugada = " + timeJugador2 / jugoJugador2 + " milisegundos\n");
+            System.out.println("La cantidad de estados promedio que visita la búsqueda = " + nodosJugador2 / jugoJugador2 + " estados\n");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this.ITablero,
                     e.getMessage(),

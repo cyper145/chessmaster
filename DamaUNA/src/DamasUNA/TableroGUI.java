@@ -3,8 +3,10 @@ package DamasUNA;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
-public class TableroGUI extends JInternalFrame implements MouseListener, MouseMotionListener {
+public class TableroGUI extends JInternalFrame implements MouseListener, MouseMotionListener,InternalFrameListener {
 
     private Container container;
     private GridBagLayout gbLayout;
@@ -17,8 +19,8 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
     private byte piezasB = 0;
     public boolean bloq = false;
     private char vez;
+    public boolean salio=false;
     
-
     public TableroGUI(char vez, String titulo) {
 
         super("Test", true, true);
@@ -30,7 +32,8 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
 
         addMouseListener(this);
         addMouseMotionListener(this);
-
+        addInternalFrameListener(this);
+        
         container = getContentPane();
         gbLayout = new GridBagLayout();
         container.setLayout(gbLayout);
@@ -241,4 +244,38 @@ public class TableroGUI extends JInternalFrame implements MouseListener, MouseMo
         }
         return table;
     }
+    
+
+    public void internalFrameOpened(InternalFrameEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void internalFrameClosing(InternalFrameEvent e) {
+        this.salio=true;
+        System.out.println("Ha salido...");
+    }
+
+    public void internalFrameClosed(InternalFrameEvent e) {
+        this.salio=true;
+         System.out.println("Ha salido...");
+    }
+
+    public void internalFrameIconified(InternalFrameEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void internalFrameDeiconified(InternalFrameEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void internalFrameActivated(InternalFrameEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void internalFrameDeactivated(InternalFrameEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    
+    
 }

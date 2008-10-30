@@ -68,7 +68,7 @@ public class MaxMin extends IEstrategia {
             estado.CambiarTurno();
             estado.CalcularValorDeEstado();
             return estado.puntaje;
-        }
+        } 
         double valor= Double.NEGATIVE_INFINITY;
         estado.GenerarSucesores();
         Vector sucesores= estado.getSucesores();

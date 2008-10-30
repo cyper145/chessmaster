@@ -48,7 +48,6 @@ public class AlfaBeta extends IEstrategia {
         {
             estado.CambiarTurno();
             estado.CalcularValorDeEstado();
-            
             return estado.puntaje;
         }
         double valor= Double.POSITIVE_INFINITY;
