@@ -142,3 +142,18 @@ double* kernelString::calcularPorWNG(string charS, string charT, int n, int m, i
 
     return Kern;
 }
+/**
+ *Si encuentra la letra en el alfabeto, retorna el numero i que representa su posicion en el vector, 
+ *sino retorna -1 en caso que no se encuentra. 
+ */
+int kernelString::traerPos(char letra, vector<char> alfabeto)
+{
+    for (int i = 0; i < alfabeto.size(); i++) {
+        if(alfabeto[i]==letra)
+        {
+            return i;
+        }
+    }
+    return -1;
+
+}
