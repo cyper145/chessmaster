@@ -44,8 +44,7 @@ void Archivo::leerArchivo() {
                         dato=atof(token);
                         Archivo::lamda.push_back(dato);
                     }
-                }
-                if(strcmp(token,"VecMiu:")==0)
+                }else if(strcmp(token,"VecMiu:")==0)
                 {
                     for ( token = strtok(NULL, " "); token != NULL;token = strtok(NULL, " ") )
                     {
