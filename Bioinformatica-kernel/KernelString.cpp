@@ -7,67 +7,28 @@
 // Leer un archivo de texto
 
 #include <stdlib.h>
+
+#include "kernelString.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "kernelString.h"
 
 using namespace std;
 /*
  * 
  */
-double** crearMatriz(int cantFila, int cantColumna);
-void destruirMatriz(double** mat);
-double* calcularPorGWSK(string charS, string charT, int n, int m, int p, double lambda);
-double* calcularPorWNG(string charS, string charT, int n, int m, int p, double lambda);
-vector<string> leerArchivo(char* path);
-
-int main(int argc, char** argv) {
-        
-    //Longitud de maximas secuencias a buscar, valor de p>2.
-    int p = 6;
-
-    //Lambda es el peso para realizar la ponderacion, entre 0 y 1.
-    double lambda = 0.5;
-
-    //Vector que contendra los resultados obtenidos luego de cada calculo.
-    double* resultado;
-    double* resultado2;
-    vector<string> secuencias;
-    //Empezamos la lectura de las secuencias para compararlas.
-    secuencias = leerArchivo("C:\\Users\\Usuario\\Desktop\\Ing. Inf. 2008\\Bioinformatica\\Secuencias de Prueba\\secuencias20.txt");
-    cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
+kernelString::kernelString()
+{
     
-    cout << "********************************************************" << endl;
-    cout << "*Resultados utilizando Gap-Weighted Subsequences Kernel*" << endl;
-    cout << "********************************************************" << endl;
-
-    for (int j = 0; j < secuencias.size(); j=j+2) {        
-        //Realizamos el calculo del Kernel para ambas cadenas.        
-        resultado = calcularPorGWSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
-        cout << "Cadena S = " << secuencias[j] << endl;
-        cout << "Cadena T = " << secuencias[j+1] << endl;
-        for (int i = 1; i < p; i++) {
-            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado[i] << endl;
-        }
-    }
-    
-    cout << "***************************************************" << endl;
-    cout << "*Resultados utilizando Weighting by Number of Gaps*" << endl;
-    cout << "***************************************************" << endl;
-    for (int j = 0; j < secuencias.size(); j=j+2) {
-        //Realizamos el calculo del Kernel para ambas cadenas.
-        resultado2 = calcularPorWNG(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
-        cout << "Cadena S = " << secuencias[j] << endl;
-        cout << "Cadena T = " << secuencias[j+1] << endl;
-        for (int i = 1; i < p; i++) {
-            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado[i] << endl;
-        }
-    }
 }
-
-double* calcularPorGWSK(string charS, string charT, int n, int m, int p, double lambda) {
+kernelString::~kernelString()
+{
+    
+}
+double* kernelString::calcularPorGWSK(string charS, string charT, int n, int m, int p, double lambda) {
     //Inicializamos las variables a utilizar.
     double** DP;
     double** DPS;
@@ -86,6 +47,9 @@ double* calcularPorGWSK(string charS, string charT, int n, int m, int p, double 
 
     //Creamos el vector.
     Kern = new double[p];
+    for (int i = 0; i < p; i++) {
+        Kern[i] = 0;
+    }
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -122,7 +86,7 @@ double* calcularPorGWSK(string charS, string charT, int n, int m, int p, double 
     return Kern;
 }
 
-double* calcularPorWNG(string charS, string charT, int n, int m, int p, double lambda) {
+double* kernelString::calcularPorWNG(string charS, string charT, int n, int m, int p, double lambda) {
     //Inicializamos las variables a utilizar.
     double** DP;
     double** DPS;
@@ -141,6 +105,9 @@ double* calcularPorWNG(string charS, string charT, int n, int m, int p, double l
 
     //Creamos el vector.
     Kern = new double[p];
+    for (int i = 0; i < p; i++) {
+        Kern[i] = 0;
+    }
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -174,26 +141,4 @@ double* calcularPorWNG(string charS, string charT, int n, int m, int p, double l
     free(DPS);
 
     return Kern;
-}
-
-vector<string> leerArchivo(char* path) {
-    string linea;
-    ifstream archivo(path);
-    //Inicializamos las variables a utilizar, que almacenara las secuencias a estudiar.
-    vector<string> cadenas;
-
-    //Creamos el vector que contendra las secuencias, le asignamos memoria.
-    cadenas.clear();
-
-    if (archivo.is_open()) {
-        //Mientras que no sea fin de archivo
-        while (!archivo.eof()) {
-            getline(archivo, linea);
-            if (linea.size() > 0) {
-                cadenas.push_back(linea);
-            }
-        }
-        archivo.close();
-    } else cout << "No se pudo abrir el archivo.";
-    return cadenas;
 }
