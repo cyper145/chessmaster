@@ -37,12 +37,20 @@ void Archivo::leerArchivo() {
                 }
                 
                 token=strtok(cp," ");
-                if(strcmp(token,"Vector:")==0)
+                if(strcmp(token,"VecLamda:")==0)
                 {
                     for ( token = strtok(NULL, " "); token != NULL;token = strtok(NULL, " ") )
                     {
                         dato=atof(token);
-                        Archivo::vec.push_back(dato);
+                        Archivo::lamda.push_back(dato);
+                    }
+                }
+                if(strcmp(token,"VecMiu:")==0)
+                {
+                    for ( token = strtok(NULL, " "); token != NULL;token = strtok(NULL, " ") )
+                    {
+                        dato=atof(token);
+                        Archivo::miu.push_back(dato);
                     }
                 }else if(strcmp(token,"Cadena:")==0)
                 {

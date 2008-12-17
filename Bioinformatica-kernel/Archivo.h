@@ -22,10 +22,10 @@ class Archivo {
 public:
     char* path;
     vector<vector<double> > matriz;
-    vector<double> vec;
     vector<char> alfabeto;
     vector<string> cadenas;
-    
+    vector<double> lamda;
+    vector<double> miu;
     //Constructor
     Archivo(char* path);
     //Destructor
