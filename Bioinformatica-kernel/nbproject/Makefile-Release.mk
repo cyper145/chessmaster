@@ -25,7 +25,9 @@ OBJECTDIR=build/Release/Cygwin-Windows
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/KernelString.o
+	${OBJECTDIR}/KernelString.o \
+	${OBJECTDIR}/Main.o \
+	${OBJECTDIR}/Archivo.o
 
 # C Compiler Flags
 CFLAGS=
@@ -50,6 +52,14 @@ dist/Release/Cygwin-Windows/bioinformatica-kernel.exe: ${OBJECTFILES}
 ${OBJECTDIR}/KernelString.o: KernelString.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	$(COMPILE.cc) -O2 -o ${OBJECTDIR}/KernelString.o KernelString.cpp
+
+${OBJECTDIR}/Main.o: Main.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	$(COMPILE.cc) -O2 -o ${OBJECTDIR}/Main.o Main.cpp
+
+${OBJECTDIR}/Archivo.o: Archivo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	$(COMPILE.cc) -O2 -o ${OBJECTDIR}/Archivo.o Archivo.cpp
 
 # Subprojects
 .build-subprojects:
