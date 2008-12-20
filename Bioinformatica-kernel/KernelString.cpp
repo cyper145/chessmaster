@@ -227,3 +227,72 @@ double* kernelString::calcularPorCWSK(string charS, string charT, int n, int m, 
 
     return Kern;
 }
+double* kernelString::calcularPorSMSK(string charS, string charT, int n, int m, int p, double lambda, vector<vector<double> > A, vector<char> alfabeto) {
+    //Inicializamos las variables a utilizar.
+    double** DP=0;
+    double** DPS=0;
+    double* Kern=0;
+    int posicionI = 0;
+    int posicionJ = 0;
+
+    //Creamos las matrices de forma dinamica y el vector tambien.
+    //Creamos matriz DP con n+1 filas y m+1 columnas
+    DP = (double **) calloc(n + 1, sizeof (double *));
+    for (int i = 0; i < n + 1; i++)
+        DP[i] = (double *) calloc(m + 1, sizeof (double));
+
+    //Creamos matriz DPS con n filas y m columnas.
+    DPS = (double **) calloc(n, sizeof (double *));
+    for (int i = 0; i < n; i++)
+        DPS[i] = (double *) calloc(m, sizeof (double));
+
+    //Creamos el vector.
+    Kern = new double[p];
+    for (int i = 0; i < p; i++) {
+        Kern[i] = 0;
+    }
+
+    for (int i = 0; i < n; i++) {
+        posicionI = kernelString::traerPos(charS[i], alfabeto);
+        for (int j = 0; j < m; j++) {
+            
+            posicionJ = kernelString::traerPos(charT[j], alfabeto);
+            if(posicionI >= 0 && posicionJ >= 0){
+                if (A[posicionI][posicionJ] != 0) {                                    
+                    DPS[i][j] = lambda*lambda*A[posicionI][posicionJ];
+                }   
+            }
+        }
+    }
+
+    for (int l = 1; l < p; l++) {
+        for (int i = 1; i < n + 1; i++) {
+            posicionI = kernelString::traerPos(charS[i - 1], alfabeto);
+            for (int j = 1; j < m + 1; j++) {
+                if (i != n && j != m){                                        
+                   DP[i][j] = DPS[i - 1][j - 1] +  lambda* DP[i - 1][j] + lambda*DP[i][j - 1] - lambda*lambda* DP[i - 1][j - 1];
+                }
+                
+                posicionJ = kernelString::traerPos(charT[j - 1], alfabeto);
+                if(posicionI >= 0 && posicionJ >= 0){
+                    if (A[posicionI][posicionJ] != 0) {
+                        DPS[i - 1][j - 1] = lambda*lambda*A[posicionI][posicionJ]*DP[i - 1][j - 1];
+                        Kern[l] = Kern[l] + DPS[i - 1][j - 1];
+                    }
+                }
+            }
+        }
+    }
+    //Liberamos nuestra memoria..
+    for (int i = 0; i < n + 1; i++) {
+        free(DP[i]);
+    }
+    free(DP);
+
+    for (int i = 0; i < n; i++) {
+        free(DPS[i]);
+    }
+    free(DPS);
+
+    return Kern;
+}
