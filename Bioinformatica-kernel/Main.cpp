@@ -11,132 +11,81 @@
 #include <windows.h>
 
 double performancecounter_diff(LARGE_INTEGER *a, LARGE_INTEGER *b);
+void imprimirResultado(Archivo arch, char metodo, double lambda,int p);
 /*
  *
  */
 int main(int argc, char** argv) {
 
-    LARGE_INTEGER t_ini, t_fin;
-    double dif;
-    double suma = 0;
+    
 
     //Longitud de maximas secuencias a buscar, valor de p>2.
-    int p = 6;
+    int p = 0;
 
     //Lambda es el peso para realizar la ponderacion, entre 0 y 1.
-    double lambda = 0.5;
+    double lambda = 0;
 
-    //Vector que contendra los resultados obtenidos luego de cada calculo.
-    double* resultado;
-    double* resultado2;
-    double* resultado3;
-    double* resultado4;
-    vector<string> secuencias;
-    //Empezamos la lectura de las secuencias para compararlas.
+    char* metodo;
     
-    Archivo arch("secuencias20.txt");
-    arch.leerArchivo();
-    secuencias=arch.cadenas;
+    if(argc!=2)
+    {
+        cout<<"Argumento No correcto"<<endl;
+        cout<<"bioinformatica-kernel <nombre_del_archivo>"<<endl;
+    }else
+    {
+        Archivo arch(argv[1]);
 
-    cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
-    cout << " " << endl;
-    cout << "********************************************************" << endl;
-    cout << "*Resultados utilizando Gap-Weighted Subsequences Kernel*" << endl;
-    cout << "********************************************************" << endl;
-    for (int j = 0; j < secuencias.size(); j=j+2) {
-          //Realizamos el calculo del Kernel para ambas cadenas.
-         dif=0;
-        QueryPerformanceCounter(&t_ini);
 
-        resultado = kernel.calcularPorGWSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
+        if (arch.leerArchivo() > 0)
+        {
+            cout << "********************************************************" << endl;
+            cout << "*           Gap-Weighted Subsequences Kernel           *" << endl;
+            cout << "********************************************************" << endl;
+            cout << endl;
 
-        QueryPerformanceCounter(&t_fin);
-        dif = performancecounter_diff(&t_fin, &t_ini);
-        suma = suma + dif;
-        cout<<endl<<"El tiempo es="<<dif<<" segundos"<<endl;
+            cout << "A- Version Original - Gap-Weighted Subsequences Kernel  " << endl;
+            cout << endl;
+            cout << "B- Primera variante - Character Weightings String Kernel" << endl;
+            cout << endl;
+            cout << "C- Version Original - Soft Matching String Kernel       " << endl;
+            cout << endl;
+            cout << "D- Version Original - Weighting by Number of Gaps       " << endl;
+            cout << endl;
 
-        cout << "Cadena S = " << secuencias[j] << endl;
-        cout << "Cadena T = " << secuencias[j+1] << endl;
-        for (int i = 1; i < p; i++) {
-            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado[i] << endl;
+            int b=1;
+            do
+            {
+                char* aux;
+                cout << "Ingrese la opcion: ";
+                cin >> aux;
+                metodo = strupr(aux);
+                if(strlen(metodo)!=1)
+                {
+                    b=0;
+                }else if(metodo[0] != 'A' && metodo[0] != 'B' && metodo[0] != 'C' && metodo[0] != 'D')
+                {
+                    b=0;
+                }
+
+            } while (b==0);
+
+            do {
+                cout << "Ingrese el valor para lambda (0,1): ";
+                cin >> lambda;
+            } while (lambda <= 0 || lambda >= 1);
+
+            do {
+                cout << "Ingrese el valor para la longitud de la subsecuencia - p ( p>=2 ): ";
+                cin >> p;
+            } while (p < 2);
+
+            imprimirResultado(arch, metodo[0], lambda, p);
+            
         }
+        
+        getchar();
     }
-    cout<<endl<<"El tiempo promedio es="<<(suma/10)<<" segundos"<<endl;
-    suma = 0;
-    cout << " " << endl;
-    cout << "***************************************************" << endl;
-    cout << "*Resultados utilizando Weighting by Number of Gaps*" << endl;
-    cout << "***************************************************" << endl;
-    for (int j = 0; j < secuencias.size(); j=j+2) {
-        //Realizamos el calculo del Kernel para ambas cadenas.
-        dif=0;
-        QueryPerformanceCounter(&t_ini);
-
-        resultado2 = kernel.calcularPorWNG(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
-
-        QueryPerformanceCounter(&t_fin);
-        dif = performancecounter_diff(&t_fin, &t_ini);
-        suma = suma + dif;
-        cout<<endl<<"El tiempo es="<<dif<<" segundos"<<endl;
-
-//        cout << "Cadena S = " << secuencias[j] << endl;
-//        cout << "Cadena T = " << secuencias[j+1] << endl;
-//        for (int i = 1; i < p; i++) {
-//            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado2[i] << endl;
-//        }
-    }
-    cout<<endl<<"El tiempo promedio es="<<(suma/10)<<" segundos"<<endl;
-    suma = 0;
-    cout << " " << endl;
-    cout << "**********************************************************" << endl;
-    cout << "*Resultados utilizando Character Weightings String Kernel*" << endl;
-    cout << "**********************************************************" << endl;
-    for (int j = 0; j < secuencias.size(); j=j+2) {
-        //Realizamos el calculo del Kernel para ambas cadenas.
-        dif=0;
-        QueryPerformanceCounter(&t_ini);
-
-        resultado3 = kernel.calcularPorCWSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda, arch.lamda, arch.miu, arch.alfabeto);
-
-        QueryPerformanceCounter(&t_fin);
-        dif = performancecounter_diff(&t_fin, &t_ini);
-        suma = suma + dif;
-        cout<<endl<<"El tiempo es="<<dif<<" segundos"<<endl;
-
-//        cout << "Cadena S = " << secuencias[j] << endl;
-//        cout << "Cadena T = " << secuencias[j+1] << endl;
-//        for (int i = 1; i < p; i++) {
-//            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado3[i] << endl;
-//        }
-    }
-    cout<<endl<<"El tiempo promedio es="<<(suma/10)<<" segundos"<<endl;
-    suma = 0;
-    cout << " " << endl;
-    cout << "**********************************************************" << endl;
-    cout << "*Resultados utilizando Soft Matching String Kernel*" << endl;
-    cout << "**********************************************************" << endl;
-    for (int j = 0; j < secuencias.size(); j=j+2) {
-        //Realizamos el calculo del Kernel para ambas cadenas.
-        dif=0;
-        QueryPerformanceCounter(&t_ini);
-
-        resultado4 = kernel.calcularPorSMSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda, arch.matriz, arch.alfabeto);
-
-        QueryPerformanceCounter(&t_fin);
-
-        dif = performancecounter_diff(&t_fin, &t_ini);
-        suma = suma + dif;
-        cout<<endl<<"El tiempo es="<<dif<<" segundos"<<endl;
-
-//        cout << "Cadena S = " << secuencias[j] <<endl;
-//        cout << "Cadena T = " << secuencias[j+1] << endl;
-//        for (int i = 1; i < p; i++) {
-//            cout << "El valor del kernel para subsecuencias de tamanho " << (i + 1) << " es: " << resultado4[i] << endl;
-//        }
-    }
-    cout<<endl<<"El tiempo promedio es="<<(suma/10)<<" segundos"<<endl;
-    suma = 0;
-    getchar();
+    
 }
 
 /* retorna "a - b" en segundos */
@@ -152,60 +101,120 @@ void imprimirResultado(Archivo arch, char metodo, double lambda,int p)
     kernelString kernel;
     double* resultado;
     vector< string > secuencias;
-    
 
-    if(metodo=='A')
+    //Sacamos los datos del archivo.
+    secuencias=arch.cadenas;
+    vector<double> vecLambda=arch.lamda;
+    vector<double> vecMiu=arch.miu;
+    vector<char> vecAlfabeto=arch.alfabeto;
+    vector< vector<double> > matriz=arch.matriz;
+
+    vector<double> fila;
+    
+    cout << endl;
+    if(metodo=='A'|| metodo=='a')
     {
         cout << "********************************************************" << endl;
         cout << "*Resultados utilizando Gap-Weighted Subsequences Kernel*" << endl;
         cout << "********************************************************" << endl;
-
-        for (int j = 0; j < secuencias.size(); j=j+2)
+        cout<<endl;
+        cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
+        for (int j = 0; j < secuencias.size(); j++)
         {
+            fila.clear();
+            for (int i = 0; i < secuencias.size(); i++) {
             //Realizamos el calculo del Kernel para ambas cadenas.
-            resultado = kernel.calcularPorGWSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
-            cout << "Cadena S = " << secuencias[j] <<endl;
-            cout << "Cadena T = " << secuencias[j+1] << endl;
-            cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+                cout<<"i= "<<i<<" j= "<<j;
+                resultado = kernel.calcularPorGWSK(secuencias[j], secuencias[i], secuencias[j].size()-1, secuencias[i].size()-1, p, lambda);
+                cout << "Cadena S = " << secuencias[j] <<endl;
+                cout << "Cadena T = " << secuencias[i] << endl;
+                cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+                cout << endl;
+                fila.push_back(resultado[p-1]);
+                
+            }
+            arch.escribirArchivo("ResultGWSK.txt",fila);
+            
         }
-    }else if(metodo=='B')
+    }else if (metodo == 'B' || metodo == 'b')
     {
         cout << "**********************************************************" << endl;
         cout << "*Resultados utilizando Character Weightings String Kernel*" << endl;
         cout << "**********************************************************" << endl;
-        for (int j = 0; j < secuencias.size(); j=j+2)
-        {
-            //Realizamos el calculo del Kernel para ambas cadenas.
-            resultado = kernel.calcularPorCWSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda, arch.lamda, arch.miu, arch.alfabeto);
-            cout << "Cadena S = " << secuencias[j] <<endl;
-            cout << "Cadena T = " << secuencias[j+1] << endl;
-            cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+        cout << endl;
+        cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
+        if (!vecLambda.empty() && !vecMiu.empty() && !vecAlfabeto.empty()) {
+            for (int j = 0; j < secuencias.size(); j++) {
+                fila.clear();
+                for (int i = 0; i < secuencias.size(); i++) {
+                    //Realizamos el calculo del Kernel para ambas cadenas.
+                    cout << "i= " << i << " j= " << j;
+                    resultado = kernel.calcularPorCWSK(secuencias[j], secuencias[i], secuencias[j].size() - 1, secuencias[i].size() - 1, p, lambda,vecLambda,vecMiu,vecAlfabeto);
+                    cout << "Cadena S = " << secuencias[j] << endl;
+                    cout << "Cadena T = " << secuencias[i] << endl;
+                    cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p - 1] << endl;
+                    cout << endl;
+                    fila.push_back(resultado[p - 1]);
+
+                }
+                arch.escribirArchivo("ResultCWSK.txt", fila);
+
+            }
+
+        } else {
+            cout << "Falta alguno de los vectores requeridos (vecLamda,vecMiu,Alfabeto)" << endl;
         }
-    }else if(metodo=='C')
+
+    }else if(metodo=='C'|| metodo=='c')
     {
         cout << "***************************************************" << endl;
         cout << "*Resultados utilizando Soft Matching String Kernel*" << endl;
         cout << "***************************************************" << endl;
-        for (int j = 0; j < secuencias.size(); j=j+2)
-        {
-            //Realizamos el calculo del Kernel para ambas cadenas.
-            resultado = kernel.calcularPorSMSK(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda, arch.matriz, arch.alfabeto);
-            cout << "Cadena S = " << secuencias[j] <<endl;
-            cout << "Cadena T = " << secuencias[j+1] << endl;
-            cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+        cout << endl;
+        cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
+        if (!matriz.empty() && !vecAlfabeto.empty()) {
+            for (int j = 0; j < secuencias.size(); j++) {
+                fila.clear();
+                for (int i = 0; i < secuencias.size(); i++) {
+                    //Realizamos el calculo del Kernel para ambas cadenas.
+                    cout << "i= " << i << " j= " << j;
+                    resultado = kernel.calcularPorSMSK(secuencias[j], secuencias[i], secuencias[j].size() - 1, secuencias[i].size() - 1, p, lambda,matriz,vecAlfabeto);
+                    cout << "Cadena S = " << secuencias[j] << endl;
+                    cout << "Cadena T = " << secuencias[i] << endl;
+                    cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p - 1] << endl;
+                    cout << endl;
+                    fila.push_back(resultado[p - 1]);
+
+                }
+                arch.escribirArchivo("ResultSMSK.txt", fila);
+
+            }
+        } else {
+            cout << "Falta el Alfabeto o la Matriz requerida." << endl;
         }
-    }else if(metodo=='D')
+    }else if(metodo=='D'|| metodo=='d')
     {
         cout << "***************************************************" << endl;
         cout << "*Resultados utilizando Weighting by Number of Gaps*" << endl;
         cout << "***************************************************" << endl;
-        for (int j = 0; j < secuencias.size(); j=j+2)
+        cout<<endl;
+        cout << "Cantidad de Secuencias leidas = " << secuencias.size() << endl;
+        for (int j = 0; j < secuencias.size(); j++)
         {
+            fila.clear();
+            for (int i = 0; i < secuencias.size(); i++) {
             //Realizamos el calculo del Kernel para ambas cadenas.
-            resultado = kernel.calcularPorWNG(secuencias[j], secuencias[j+1], secuencias[j].size()-1, secuencias[j+1].size()-1, p, lambda);
-            cout << "Cadena S = " << secuencias[j] <<endl;
-            cout << "Cadena T = " << secuencias[j+1] << endl;
-            cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+                cout<<"i= "<<i<<" j= "<<j;
+                resultado = kernel.calcularPorWNG(secuencias[j], secuencias[i], secuencias[j].size()-1, secuencias[i].size()-1, p, lambda);
+                cout << "Cadena S = " << secuencias[j] <<endl;
+                cout << "Cadena T = " << secuencias[i] << endl;
+                cout << "El valor del kernel para subsecuencias de tamanho " << p << " es: " << resultado[p-1] << endl;
+                cout << endl;
+                fila.push_back(resultado[p-1]);
+
+            }
+            arch.escribirArchivo("ResultWNG.txt",fila);
+
         }
     }
 

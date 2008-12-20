@@ -10,15 +10,15 @@ Archivo::Archivo(char* path)
 {
     Archivo::path=path;
 }
-
-void Archivo::leerArchivo() {
+/**
+ *Reorna 0 si el archivo no pudo abrirse, y retorna 1 si el archivo fue abierto con exito.
+ */
+int Archivo::leerArchivo() {
     string linea;
     ifstream archivo(Archivo::path);
     const char* aux;
     char* cp;
     char* token;
-    vector<double> vec;
-    vector<char> alfabeto;
     string cadena;
     double dato;
     //Inicializamos las variables a utilizar, que almacenara las secuencias a estudiar.
@@ -80,7 +80,32 @@ void Archivo::leerArchivo() {
             }
         }
         archivo.close();
-    } else cout << "No se pudo abrir el archivo.";
-    
+    } else
+    {
+        cout << "Upss!!! ERROR: No se pudo abrir el archivo."<<endl;
+        return 0;
+    }
+
+    return 1;
+}
+
+void Archivo::escribirArchivo(char* nombreArchivo,vector<double> resultado)
+{
+
+    ofstream archivo(nombreArchivo,ios_base::app);
+
+    if(archivo.is_open())
+    {
+        for (int i = 0; i < resultado.size(); i++) {
+            archivo<<resultado[i]<<"  ";
+        }
+
+        archivo<<"\n";
+        archivo.close();
+    }else{
+        cout << "Upss!!! ERROR: No se pudo abrir el archivo."<<endl;
+    }
+
+
 }
 

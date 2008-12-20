@@ -32,8 +32,8 @@ public:
     ~Archivo();
     
     //Metodos
-    void leerArchivo();
-    
+    int leerArchivo();
+    void escribirArchivo(char* nombreArchivo,vector<double> resultado);
     
           
 };
