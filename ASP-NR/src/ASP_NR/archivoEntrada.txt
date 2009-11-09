@@ -1,0 +1,8 @@
+E : T J
+J : + T J
+J : @
+T : F G
+G : * F G
+G : @
+F : ( E )
+F : id
