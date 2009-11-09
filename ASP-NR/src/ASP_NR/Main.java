@@ -21,7 +21,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException, Exception {
         // TODO code application logic here
-        Archivo arch= new Archivo("C:\\Users\\Usuario\\Desktop\\FP-UNA\\Ing. Inf. 2009\\10mo\\Compiladores\\TP-Parcial\\ASP-NR\\src\\ASP_NR\\");
+        Archivo arch= new Archivo("src\\ASP_NR\\");
         arch.setFileNameIN("archivoEntrada.txt");
         Vector producciones=arch.leer();
 
@@ -30,6 +30,8 @@ public class Main {
         anal.CalcularPrimeros();
         anal.CalcularSiguientes();
         anal.imprimirConjuntosPrimeros();
+        anal.hacerTablaASP();
+        anal.imprimirTablaASP();
 //        String prod = "E T F";
 //        String alpha = "";
 //        String betha = "";

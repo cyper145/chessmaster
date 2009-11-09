@@ -124,6 +124,33 @@ public class ASP {
         }
     }
 
+    /**
+     * Es utilizado para hallar el primero de una produccion.
+     * Antes de utilizar esta funcion, primero se debe correr la funcion Primero()
+     * @param terminales
+     * @param prod Es la produccion a la cual le queremos hallar su conjunto primero.
+     */
+    public void primeroProduccion(Vector terminales, String prod) {
+
+        StringTokenizer token = new StringTokenizer(prod, " ");
+        while (token.hasMoreElements()) {
+            String elemento = token.nextToken();
+            if (this.no_terminales.containsKey(elemento)) {
+                NoTerminal nT = (NoTerminal) this.no_terminales.get(elemento);
+                this.agregarTodos(terminales, nT.getPrimero());
+                if (!this.tieneVacio(terminales)) {
+                    break;
+                } else if (!token.hasMoreElements()) {
+                    this.agregar(terminales, "@");
+                }
+            } else {
+                this.agregar(terminales, elemento);
+                break;
+            }
+
+        }
+    }
+
     public void CalcularSiguientes() {
 
         NoTerminal aux = (NoTerminal) this.no_terminales.get(this.simboloInicial);
@@ -199,23 +226,75 @@ public class ASP {
     }
 
     public void agregarTodos(Vector vector, Vector elementos) {
-        
+
         for (int i = 0; i < elementos.size(); i++) {
-            String cad = (String)elementos.get(i);
+            String cad = (String) elementos.get(i);
             this.agregar(vector, cad);
         }
     }
+
     public void agregar(Vector vector, String elemento) {
         boolean existe = false;
         for (int i = 0; i < vector.size(); i++) {
-            String cad = (String)vector.get(i);
-            if(cad.equals(elemento)){
+            String cad = (String) vector.get(i);
+            if (cad.equals(elemento)) {
                 existe = true;
                 break;
             }
         }
 
-        if(!existe)
+        if (!existe) {
             vector.add(elemento);
+        }
+    }
+
+    public void hacerTablaASP() throws Exception {
+        Enumeration iter = this.no_terminales.keys();
+        while (iter.hasMoreElements()) {
+            String noTerminal = (String) iter.nextElement();
+            NoTerminal nT = (NoTerminal) this.no_terminales.get(noTerminal);
+            Iterator iter2 = nT.getProducciones().iterator();
+            while (iter2.hasNext()) {
+                Vector primeros = new Vector();
+                String prod = (String) iter2.next();
+                this.primeroProduccion(primeros, prod);
+
+                Iterator iter3 = primeros.iterator();
+                while (iter3.hasNext()) {
+                    String terminal = (String) iter3.next();
+                    if (terminal.compareTo("@") != 0) {
+                        if(nT.getFilaTabla().containsKey(terminal))
+                            throw new Exception("GRAMATICA AMBIGUA!!!!");
+                        else
+                            nT.getFilaTabla().put(terminal, prod);
+                    }
+                }
+                if (this.tieneVacio(primeros)) {
+                    iter3 = nT.getSiguiente().iterator();
+                    while (iter3.hasNext()) {
+                        String terminal = (String) iter3.next();
+                        //En $ tambien ya inserta, por que para nosotros cualquier
+                        //cosa que no es un NoTerminal es insertado como no Terminal. Excepto el @.
+                        if(nT.getFilaTabla().containsKey(terminal))
+                            throw new Exception("GRAMATICA AMBIGUA!!!!");
+                        else
+                            nT.getFilaTabla().put(terminal, prod);
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    public void imprimirTablaASP() {
+        Enumeration iter = this.no_terminales.keys();
+
+        while (iter.hasMoreElements()) {
+            String noTerminal = (String) iter.nextElement();
+            System.out.println("No Terminal: "+noTerminal);
+            NoTerminal nT = (NoTerminal) this.no_terminales.get(noTerminal);
+            System.out.println(nT.getFilaTabla().toString());
+        }
     }
 }
