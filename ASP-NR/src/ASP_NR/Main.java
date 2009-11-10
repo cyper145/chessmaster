@@ -30,16 +30,7 @@ public class Main {
         anal.CalcularPrimeros();
         anal.CalcularSiguientes();
         anal.imprimirConjuntosPrimeros();
-        anal.hacerTablaASP();
-        anal.imprimirTablaASP();
-//        String prod = "E T F";
-//        String alpha = "";
-//        String betha = "";
-//        int indice = prod.indexOf("E");
-//        alpha = prod.substring(0, indice).trim();
-//        betha = prod.substring(indice+1, prod.length()).trim();
-//
-//        System.out.println("alpha = "+alpha);
-//        System.out.println("betha = "+betha);
+//        anal.hacerTablaASP();
+//        anal.imprimirTablaASP();
     }
 }

@@ -179,7 +179,7 @@ public class ASP {
                     String betha = "";
                     int indice = prod.indexOf(elemento);
                     alpha = prod.substring(0, indice).trim();
-                    betha = prod.substring(indice + 1, prod.length()).trim();
+                    betha = prod.substring(indice + elemento.length(), prod.length()).trim();
                     if (!betha.isEmpty()) {
                         StringTokenizer tokens = new StringTokenizer(betha, " ");
                         String tok = tokens.nextToken().trim();
@@ -187,7 +187,7 @@ public class ASP {
                             NoTerminal nt = (NoTerminal) this.no_terminales.get(tok);
                             agregarTodos(conjuntoSiguientes, nt.getPrimero());
                             if (this.tieneVacio(conjuntoSiguientes)) {
-                                if (key != elemento) {
+                                if (!key.equals(elemento)) {
                                     this.Siguiente(aux.getSiguiente(), key);
                                     agregarTodos(conjuntoSiguientes, aux.getSiguiente());
                                 }
@@ -196,7 +196,7 @@ public class ASP {
                             this.agregar(conjuntoSiguientes, tok);
                         }
                     } else {
-                        if (key != elemento) {
+                        if (!key.equals(elemento)) {
                             this.Siguiente(aux.getSiguiente(), key);
                             agregarTodos(conjuntoSiguientes, aux.getSiguiente());
                         }

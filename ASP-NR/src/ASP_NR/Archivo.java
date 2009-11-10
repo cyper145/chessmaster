@@ -132,7 +132,8 @@ public class Archivo {
         
             //Empieza la lectura de las covarianza. 
             while ((linea = br_path.readLine()) != null) {
-                lineas.add(linea);
+                if(!linea.startsWith("#"))
+                    lineas.add(linea);
                     
             }
            return lineas;
