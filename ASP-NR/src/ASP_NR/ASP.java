@@ -163,11 +163,11 @@ public class ASP {
             String key = (String) enuM.nextElement();
             aux = (NoTerminal) this.no_terminales.get(key);
 
-            this.Siguiente(aux.getSiguiente(), key);
+            this.Siguiente(key, aux.getSiguiente(), key);
         }
     }
 
-    private void Siguiente(Vector conjuntoSiguientes, String elemento) {
+    private void Siguiente(String elementoReal, Vector conjuntoSiguientes, String elemento) {
         Enumeration enuM = this.no_terminales.keys();
         while (enuM.hasMoreElements()) {
             String key = (String) enuM.nextElement();
@@ -188,8 +188,8 @@ public class ASP {
                             NoTerminal nt = (NoTerminal) this.no_terminales.get(tok);
                             agregarTodos(conjuntoSiguientes, nt.getPrimero());
                             if (this.tieneVacio(conjuntoSiguientes)) {
-                                if (!key.equals(elemento)) {
-                                    this.Siguiente(aux.getSiguiente(), key);
+                                if (!key.equals(elemento) && !key.equals(elementoReal)) {
+                                    this.Siguiente(elementoReal, aux.getSiguiente(), key);
                                     agregarTodos(conjuntoSiguientes, aux.getSiguiente());
                                 }
                             }
@@ -197,8 +197,8 @@ public class ASP {
                             this.agregar(conjuntoSiguientes, tok);
                         }
                     } else {
-                        if (!key.equals(elemento)) {
-                            this.Siguiente(aux.getSiguiente(), key);
+                        if (!key.equals(elemento) && !key.equals(elementoReal)) {
+                            this.Siguiente(elementoReal, aux.getSiguiente(), key);
                             agregarTodos(conjuntoSiguientes, aux.getSiguiente());
                         }
                     }
@@ -265,6 +265,10 @@ public class ASP {
                     String terminal = (String) iter3.next();
                     if (terminal.compareTo("@") != 0) {
                         if (nT.getFilaTabla().containsKey(terminal)) {
+                            System.out.println("No-Terminal = "+nT.getNombre());
+                            System.out.println("Terminal = "+terminal);
+                            System.out.println("Ya esta = "+(String) nT.getFilaTabla().get(terminal));
+                            System.out.println("Nuevo = "+prod);
                             throw new Exception("GRAMATICA AMBIGUA");
                         } else {
                             nT.getFilaTabla().put(terminal, prod);
@@ -278,6 +282,10 @@ public class ASP {
                         //En $ tambien ya inserta, por que para nosotros cualquier
                         //cosa que no es un NoTerminal es insertado como no Terminal. Excepto el @.
                         if (nT.getFilaTabla().containsKey(terminal)) {
+                            System.out.println("No-Terminal = "+nT.getNombre());
+                            System.out.println("Terminal = "+terminal);
+                            System.out.println("Ya esta = "+(String) nT.getFilaTabla().get(terminal));
+                            System.out.println("Nuevo = "+prod);
                             throw new Exception("GRAMATICA AMBIGUA");
                         } else {
                             nT.getFilaTabla().put(terminal, prod);
