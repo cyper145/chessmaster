@@ -7,6 +7,7 @@ package ASP_NR;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -263,10 +264,11 @@ public class ASP {
                 while (iter3.hasNext()) {
                     String terminal = (String) iter3.next();
                     if (terminal.compareTo("@") != 0) {
-                        if(nT.getFilaTabla().containsKey(terminal))
-                            throw new Exception("GRAMATICA AMBIGUA!!!!");
-                        else
+                        if (nT.getFilaTabla().containsKey(terminal)) {
+                            throw new Exception("GRAMATICA AMBIGUA");
+                        } else {
                             nT.getFilaTabla().put(terminal, prod);
+                        }
                     }
                 }
                 if (this.tieneVacio(primeros)) {
@@ -275,10 +277,11 @@ public class ASP {
                         String terminal = (String) iter3.next();
                         //En $ tambien ya inserta, por que para nosotros cualquier
                         //cosa que no es un NoTerminal es insertado como no Terminal. Excepto el @.
-                        if(nT.getFilaTabla().containsKey(terminal))
-                            throw new Exception("GRAMATICA AMBIGUA!!!!");
-                        else
+                        if (nT.getFilaTabla().containsKey(terminal)) {
+                            throw new Exception("GRAMATICA AMBIGUA");
+                        } else {
                             nT.getFilaTabla().put(terminal, prod);
+                        }
                     }
 
                 }
@@ -292,9 +295,57 @@ public class ASP {
 
         while (iter.hasMoreElements()) {
             String noTerminal = (String) iter.nextElement();
-            System.out.println("No Terminal: "+noTerminal);
+            System.out.println("No Terminal: " + noTerminal);
             NoTerminal nT = (NoTerminal) this.no_terminales.get(noTerminal);
             System.out.println(nT.getFilaTabla().toString());
         }
+    }
+
+    public String analizar(String entrada) throws Exception {
+        StringTokenizer tokens = new StringTokenizer(entrada, " ");
+        Stack pila = new Stack();
+        pila.push("$");
+        pila.push(this.simboloInicial);
+        //peek() devuelve el objeto que esta en el tope de la pila sin quitarlo.
+        String X = (String) pila.peek();
+        String preanalisis = tokens.nextToken();
+        String derivacion = "";
+        while (!X.equals("$")) {
+            if (X.equals("$") || !this.no_terminales.containsKey(X)) {
+                if (X.equals(preanalisis)) {
+                    pila.pop();
+                    preanalisis = tokens.nextToken();
+                } else {
+                    throw new Exception("NO PERTENECE");
+                }
+            } else {
+                NoTerminal nT = (NoTerminal) this.no_terminales.get(X);
+                String prod = (String) nT.getFilaTabla().get(preanalisis);
+                if (prod != null && !prod.isEmpty()) {
+                    pila.pop();
+                    if(!prod.trim().equals("@")){
+                        String prodInvertido = this.invertirCadena(prod);
+                        StringTokenizer auxTokens = new StringTokenizer(prodInvertido, " ");
+                        while(auxTokens.hasMoreElements()){
+                            pila.push(auxTokens.nextToken());
+                        }
+                    }
+                    derivacion = derivacion +"\t"+nT.getNombre()+" -> "+prod+"\n";
+                } else {
+                    throw new Exception("NO PERTENECE");
+                }
+            }
+            X = (String)pila.peek();
+        }
+        return derivacion;
+    }
+
+    public String invertirCadena(String cadena) {
+        String cadenaInvertida = "";
+        StringTokenizer tokens = new StringTokenizer(cadena, " ");
+        while(tokens.hasMoreElements()) {
+            cadenaInvertida = tokens.nextToken() +" " + cadenaInvertida;
+        }
+        return cadenaInvertida.trim();
     }
 }
