@@ -1,0 +1,48 @@
+#Primer ejemplo. Suma y multiplicacion
+#E : T J
+#J : + T J
+#J : @
+#T : F G
+#G : * F G
+#G : @
+#F : ( E )
+#F : id
+#*************************************#
+#Segundo ejemplo. If then else
+#S : i E t S J
+#S : a
+#J : e S
+#J : @
+#E : b
+#*************************************#
+#Gramatica 1: (Enviado por el profe).
+#S : A B C
+#A : a A a
+#A : a
+#B : a B b
+#B : b
+#C : b c
+#C : c
+#*************************************#
+#Gramatica 2: (Enviado por el profe).
+#PROG : module DECLARS ; PROCS end
+#DECLARS : d
+#DECLARS : d ; DECLARS
+#PROCS : p
+#PROCS : p ; PROCS
+#*************************************#
+#Gramatica 3: (Enviado por el profe).
+#V : R T
+#R : id R
+#R : id
+#T : type
+#T : id
+#*************************************#
+#Gramatica 4: (problemaspl.pdf, materiales Edu).
+S : B D
+S : @
+B : b
+B : d
+B : @
+D : d D
+D : @
