@@ -69,18 +69,18 @@
 
       <!-- B.2 MAIN CONTENT -->
                 <div>
-
-                    <!-- Pagetitle -->
+                    <!-- Pagetitle -->                    
                     <center>
                         <form name="resolver" action="actionManager" method="post">
+                            <br>
                             <table>
                                 <tbody>
-                                    <tr>
-                                        <td style="padding-right:6px;">Ingrese  la cadena <br> de entrada </td>
+                                    <tr class="odd">
+                                        <td >Ingrese  la cadena <br> de entrada </td>
                                         <td align="center"><input type="text" name="entrada" size="60"></td>
                                     </tr>
-                                    <tr>
-                                        <td style="padding-right:6px;">Ingrese la Gramática<br>a utilizar</td>
+                                    <tr class="odd">
+                                        <td >Ingrese la Gramática<br>a utilizar</td>
                                         <td>
                                             <textarea name="gramatica" cols="45" rows="15"></textarea>
                                         </td>

@@ -102,11 +102,11 @@
                 }
                 out.println("</tbody>");
                 out.println("</table>");
-            }else if(!analizador.solucion){
-                out.println("<center><h2>La cadena NO pertenece al Lenguaje!!!</h2></center>");
-                out.println("<br>");
             }else if(analizador.esAmbiguo){
                 out.println("<center><h2>La Gramatica dada es ambigua!!!</h2></center>");
+                out.println("<br>");
+            }else{
+                out.println("<center><h2>La cadena NO pertenece al Lenguaje!!!</h2></center>");
                 out.println("<br>");
             }
 
@@ -119,11 +119,13 @@
             out.println("<center>");
             out.println("<table>");
             out.println("<tbody>");
+            out.println("<thead>");
             out.println("<tr>");
             out.println("<th align=\"center\">No-Terminal<b></th>");
             out.println("<th align=\"center\">Primero<b></th>");
             out.println("<th align=\"center\">Siguiente<b></th>");
             out.println("</tr>");
+            out.println("</thead>");
             while (noTerminales.hasNext()) {
                 NoTerminal nT = (NoTerminal) analizador.no_terminales.get((String) noTerminales.next());
                 out.println("<tr>");
@@ -143,6 +145,7 @@
             out.println("<center>");
             out.println("<table>");
             out.println("<tbody>");
+            out.println("<thead>");
             out.println("<tr>");
             out.println("<th>&nbsp;</th>");
             while (terminales.hasNext()) {
@@ -150,6 +153,7 @@
                 out.println("<th><b>" + terminal + "</b></th>");
             }
             out.println("</tr>");
+            out.println("</thead>");
             noTerminales = claves.iterator();
             while (noTerminales.hasNext()) {
                 NoTerminal nT = (NoTerminal) analizador.no_terminales.get((String) noTerminales.next());

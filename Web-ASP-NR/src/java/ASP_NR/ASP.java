@@ -22,7 +22,7 @@ public class ASP {
     public String simboloInicial = "";
     public String derivacion = "";
     public boolean esAmbiguo=false;
-    public boolean solucion=false;
+    public boolean solucion=true;
 
     public ASP() {
         this.terminales = new Vector();

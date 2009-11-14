@@ -18,6 +18,33 @@
 *{padding:0; margin:0;}
  body {font-size:62.5%; background-color:rgb(255,255,255); font-family:verdana,arial,sans-serif;} /*Font-size: 1.0em = 10px when browser default size is 16px*/
 .page-container {width:900px; margin:0px auto; margin-top:10px; margin-bottom:10px; border:solid 1px rgb(150,150,150); font-size:1.0em;}
+.page-container table {border-collapse: collapse;border-spacing:0;border: 1px solid #BA9;font: 90% "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;}
+.page-container table caption{padding: 0 .4em .4em; text-align: left; font-size: 110%; font-weight: bold; text-transform: uppercase;color: #453827;background: transparent;}
+.page-container tr{}
+.page-container td, th {border: 1px solid #BBAA99;padding: .3em;font-size: 11pt;color: #666;}
+.page-container thead th, tfoot th, tfoot td {border: 1px solid #BA9;text-align: left;font-weight: bold;font-size: 11pt ;background-color:#189217;
+	color: #FFF;
+}
+.page-container tbody th,thead th,tbody td {
+	vertical-align: top;
+	text-align: left;
+}
+
+.page-container tbody tr:hover td, tbody tr:focus td, tbody tr:hover th, tbody tr:focus th
+{
+	background-color:white;
+	
+}
+
+.page-container tr.odd
+{
+    background-color: #eeeeee;
+}
+
+
+
+
+
 .main {clear:both; width:900px; padding-bottom:30px; background:transparent url(../img/bg_main_withoutnav.jpg) repeat top left }
 .main-navigation {display:inline /*Fix IE floating margin bug*/; float:left; width:200px; overflow:visible !important /*Firefox*/; overflow:hidden /*IE6*/;}
 .main-content {display:inline; /*Fix IE floating margin bug*/; float:left; width:800px; margin:0 0 0 30px; overflow:visible !important /*Firefox*/; overflow:hidden /*IE6*/;}
