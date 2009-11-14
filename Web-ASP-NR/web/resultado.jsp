@@ -81,26 +81,34 @@
                         <form name="resolver" action="actionManager" method="post">
                             <center><h2>Resultados</h2></center>
                             <%
-        boolean solucion = Boolean.parseBoolean((String) request.getAttribute("solucion"));
-        if (solucion) {
+        boolean error = Boolean.parseBoolean((String) request.getAttribute("error"));
+        if (!error) {
             ASP analizador = (ASP) request.getAttribute("analizador");
             analizador.derivacion.toString();
             StringTokenizer tokens = new StringTokenizer(analizador.derivacion.trim(), "\n");
-            out.println("<center><h2>La cadena pertenece al Lenguaje!!!.</h2></center>");
-            out.println("<br>");
 
-            //Impresion de la derivacion.
-            out.println("<center><h3>La derivación obtenida es:</h3></center>");
-            out.println("<br>");
-            out.println("<table>");
-            out.println("<tbody>");
-            while (tokens.hasMoreElements()) {
-                out.println("<tr>");
-                out.println("<td>" + tokens.nextToken() + "</td>");
-                out.println("</tr>");
+            if(analizador.solucion){
+                out.println("<center><h2>La cadena pertenece al Lenguaje!!!</h2></center>");
+                out.println("<br>");
+                //Impresion de la derivacion.
+                out.println("<center><h3>La derivación obtenida es:</h3></center>");
+                out.println("<br>");
+                out.println("<table>");
+                out.println("<tbody>");
+                while (tokens.hasMoreElements()) {
+                    out.println("<tr>");
+                    out.println("<td>" + tokens.nextToken() + "</td>");
+                    out.println("</tr>");
+                }
+                out.println("</tbody>");
+                out.println("</table>");
+            }else if(!analizador.solucion){
+                out.println("<center><h2>La cadena NO pertenece al Lenguaje!!!</h2></center>");
+                out.println("<br>");
+            }else if(analizador.esAmbiguo){
+                out.println("<center><h2>La Gramatica dada es ambigua!!!</h2></center>");
+                out.println("<br>");
             }
-            out.println("</tbody>");
-            out.println("</table>");
 
             //Impresion de conjuntos primero y siguiente.
             Set claves = analizador.no_terminales.keySet();
@@ -148,10 +156,18 @@
                 out.println("<tr>");
                 out.println("<td aling=\"center\"><b>" + nT.getNombre() + "</b></td>");
                 terminales = analizador.terminales.iterator();
+
                 while(terminales.hasNext()){
-                    String prod = (String)nT.getFilaTabla().get((String)terminales.next());
-                    if(prod != null && prod.length() > 0){
-                        out.println("<td>" + prod + "</td>");
+                    Vector prod = (Vector)nT.getFilaTabla().get((String)terminales.next());
+                    if(prod !=null && !prod.isEmpty()){
+                        Iterator iter=prod.iterator();
+                        out.println("<td>");
+                        while(iter.hasNext())
+                        {
+                            String pd=(String)iter.next();
+                            out.println(nT.getNombre()+"->"+pd + "<br>");
+                        }
+                        out.println("</td>");
                     }else{
                         out.println("<td>&nbsp;</td>");
                     }
@@ -161,12 +177,19 @@
             out.println("</tbody>");
             out.println("</table>");
             out.println("</center>");
-        }
-
-        String error = (String) request.getAttribute("error");
-        if (error != null) {
+        }else{
             out.println("<center><h2>ERROR</h2></center>");
-            out.println("<center><h2>" + error + "</h2></center>");
+            out.println("<center><h3>" + error + "</h3></center>");
+            //Impresion del error.
+            Exception ex = (Exception) request.getAttribute("exception");
+            out.println("<br>");
+            out.println("<table>");
+            out.println("<tbody>");
+            out.println("<tr>");
+            out.println("<td>" + ex.toString() + "</td>");
+            out.println("</tr>");
+            out.println("</tbody>");
+            out.println("</table>");
         }
                             %>
 

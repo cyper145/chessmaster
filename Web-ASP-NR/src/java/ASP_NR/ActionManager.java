@@ -81,11 +81,12 @@ public class ActionManager extends HttpServlet {
         try {
             entrada = entrada.trim() + " $";
             analizador = this.analizar(entrada.trim(), grammar);
-            request.setAttribute("solucion", "true");
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            request.setAttribute("error", "OCURRIO UN ERROR DESCONOCIDO\n");
+            request.setAttribute("exception", e);
         }
         request.setAttribute("analizador", analizador);
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("resultado.jsp");
         dispatcher.forward(request, response);
     }
@@ -106,7 +107,9 @@ public class ActionManager extends HttpServlet {
             analizador.CalcularPrimeros();
             analizador.CalcularSiguientes();            
             analizador.hacerTablaASP();
-            analizador.analizar(entrada);
+            if(!analizador.esAmbiguo){
+                analizador.analizar(entrada);
+            }
             return analizador;
 
     }

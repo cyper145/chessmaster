@@ -21,6 +21,8 @@ public class ASP {
     public Hashtable no_terminales;// Vector que contiene objetos No_terminales
     public String simboloInicial = "";
     public String derivacion = "";
+    public boolean esAmbiguo=false;
+    public boolean solucion=false;
 
     public ASP() {
         this.terminales = new Vector();
@@ -76,7 +78,27 @@ public class ASP {
                 }
             }
         }
+        //Llenamos el vector de Terminales.
+        iterProduc = producciones.iterator();
+        while (iterProduc.hasNext()) {
+            String p = (String) iterProduc.next();
+            StringTokenizer token = new StringTokenizer(p, ":");
 
+            token.nextToken();// Sacamos el lado izquierdo
+            String ladoDerecho = token.nextToken().trim(); //Sacamos el lado derecho.
+            StringTokenizer tokDer = new StringTokenizer(ladoDerecho, " ");//Sacamos los elementos del lado derecho.
+            while (tokDer.hasMoreTokens()) {
+                String clave = tokDer.nextToken();
+                //Si la clave no es un No-Terminal t no es vacio entra en el vector de Terminales.
+                if (!this.no_terminales.containsKey(clave) && !clave.equals("@")) {
+                    this.agregar(this.terminales, clave);
+                }
+            }
+        }
+        //Agregamos $ al final de la lista de Terminales.
+        this.agregar(this.terminales, "$");
+        //Eliminamos el vacio de los terminales.
+        this.tieneVacio(this.terminales);
     }
 
     public void CalcularPrimeros() {
@@ -89,12 +111,7 @@ public class ASP {
 
             this.primero(conjuntoPrimero, key);
             aux.setPrimero(conjuntoPrimero);
-            this.agregarTodos(this.terminales, conjuntoPrimero);
-        }
-        //Agregamos el $ al final de los terminales.
-        this.terminales.add("$");
-        //Eliminamos el vacio de los terminales.
-        this.tieneVacio(this.terminales);
+        }        
     }
 
     private void primero(Vector terminales, String X) {
@@ -255,7 +272,7 @@ public class ASP {
         }
     }
 
-    public void hacerTablaASP() throws Exception {
+    public void hacerTablaASP() throws Exception {        
         Enumeration iter = this.no_terminales.keys();
         while (iter.hasMoreElements()) {
             String noTerminal = (String) iter.nextElement();
@@ -270,14 +287,8 @@ public class ASP {
                 while (iter3.hasNext()) {
                     String terminal = (String) iter3.next();
                     if (terminal.compareTo("@") != 0) {
-                        if (nT.getFilaTabla().containsKey(terminal)) {
-                            System.out.println("No-Terminal = "+nT.getNombre());
-                            System.out.println("Terminal = "+terminal);
-                            System.out.println("Ya esta = "+(String) nT.getFilaTabla().get(terminal));
-                            System.out.println("Nuevo = "+prod);
-                            throw new Exception("GRAMATICA AMBIGUA");
-                        } else {
-                            nT.getFilaTabla().put(terminal, prod);
+                        if (nT.setFilaTabla(terminal, prod)) {
+                            this.esAmbiguo=true;
                         }
                     }
                 }
@@ -287,14 +298,8 @@ public class ASP {
                         String terminal = (String) iter3.next();
                         //En $ tambien ya inserta, por que para nosotros cualquier
                         //cosa que no es un NoTerminal es insertado como no Terminal. Excepto el @.
-                        if (nT.getFilaTabla().containsKey(terminal)) {
-                            System.out.println("No-Terminal = "+nT.getNombre());
-                            System.out.println("Terminal = "+terminal);
-                            System.out.println("Ya esta = "+(String) nT.getFilaTabla().get(terminal));
-                            System.out.println("Nuevo = "+prod);
-                            throw new Exception("GRAMATICA AMBIGUA");
-                        } else {
-                            nT.getFilaTabla().put(terminal, prod);
+                        if (nT.setFilaTabla(terminal, prod)) {
+                            this.esAmbiguo=true;
                         }
                     }
 
@@ -330,11 +335,12 @@ public class ASP {
                     pila.pop();
                     preanalisis = tokens.nextToken();
                 } else {
-                    throw new Exception("NO PERTENECE");
+                    this.solucion = false;
+                    break;
                 }
             } else {
                 NoTerminal nT = (NoTerminal) this.no_terminales.get(X);
-                String prod = (String) nT.getFilaTabla().get(preanalisis);
+                String prod =(String)((Vector)nT.getFilaTabla().get(preanalisis)).get(0);
                 if (prod != null && !prod.isEmpty()) {
                     pila.pop();
                     if(!prod.trim().equals("@")){
@@ -346,7 +352,8 @@ public class ASP {
                     }
                     derivacion = derivacion +"\t"+nT.getNombre()+" -> "+prod+"\n";
                 } else {
-                    throw new Exception("NO PERTENECE");
+                    this.solucion = false;
+                    break;
                 }
             }
             X = (String)pila.peek();

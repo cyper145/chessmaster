@@ -65,8 +65,24 @@ public class NoTerminal {
         return Siguiente;
     }
 
-    public void setFilaTabla(Hashtable FilaTabla) {
-        this.FilaTabla = FilaTabla;
+    public boolean setFilaTabla(String terminal, String produccion) {
+        boolean esAmbiguo;
+        Vector producciones;
+        if(this.FilaTabla.containsKey(terminal))
+        {
+            esAmbiguo=true;
+            producciones =(Vector) this.FilaTabla.get(terminal);
+            producciones.add(produccion);
+            
+        }else
+        {
+            esAmbiguo=false;
+            producciones = new Vector();
+            producciones.add(produccion);
+            this.FilaTabla.put(terminal, producciones);
+        }
+
+        return esAmbiguo;
     }
 
     public void setNombre(String Nombre) {
