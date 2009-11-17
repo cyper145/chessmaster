@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package ASP_NR;
 
 import java.util.Hashtable;
@@ -11,8 +8,10 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- *
- * @author Arturo
+ * Esta clase es utilizada para ejecutar el programa en caso que el ambiente \
+ * Web no funcione.
+ * @author Manuel Avalos
+ * @author Arturo Ferreira
  */
 public class Main {
 

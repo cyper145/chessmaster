@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
- * @author Usuario
+ * Es el servlet utilizado para gestionar las solicitudes hechas desde
+ * el navegador web.
+ * @author Manuel Avalos.
+ * @author Arturo Ferreira.
  */
 public class ActionManager extends HttpServlet {
    

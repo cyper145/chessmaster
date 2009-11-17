@@ -1,7 +1,5 @@
 /*
- * Archivo.java
- *
- * Created on 17/12/2007, 10:43:01 AM
+ * 
  *
  */
 package ASP_NR;
@@ -21,8 +19,10 @@ import java.util.logging.Logger;
 
 /**
  *
- * Clase utilizada para el manejo de archivos.
- * @author R2
+ * Clase utilizada para el manejo de archivos. Esta clase es utilizada
+ * solo si el programa se corre sin ambiente web.
+ * @author Manuel Avalos
+ * @author Arturo Ferreira
  */
 public class Archivo {
     private String path=null;

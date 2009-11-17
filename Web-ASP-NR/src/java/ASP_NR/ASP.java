@@ -12,18 +12,44 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * Esta clase representa a un Analizador Sintactico Predictivo y contiene todos los metodos necesarios
+ * Esta clase representa a un Analizador Sintactico Predictivo y contiene
+ * todos los metodos necesarios
  * que un ASP necesitaria para su proceso de analisis.
  * @author Usuario
  */
 public class ASP {
 
-    public Vector terminales;// Vector de String que contiene todos los terminales.
-    public Hashtable no_terminales;// Vector que contiene objetos No_terminales
-    public String simboloInicial = "";//Variable que guardara el Simbolo Inicial
-    public String derivacion = "";//Variable que guardara la derivacion correspondiente de la entrada si es que pertenece al lenguaje.
-    public boolean esAmbiguo=false;//Nos indicara si la Gramatica es ambigua o no.
-    public boolean solucion=true;//Nos indica si es que se pudo obtener una derivacion, es decir si la Cadena de entrada pertenece al Lenguaje.
+    /**
+     * Vector de String que contiene todos los terminales.
+     */
+    public Vector terminales;
+
+    /**
+     * Vector que contiene objetos No_terminales
+     */
+    public Hashtable no_terminales;
+
+    /**
+     * Variable que guardara el Simbolo Inicial
+     */
+    public String simboloInicial = "";
+
+    /**
+     * Variable que guardara la derivacion correspondiente de la entrada
+     * si es que pertenece al lenguaje.
+     */
+    public String derivacion = "";//
+    
+    /**
+     * Nos indicara si la Gramatica es ambigua o no.
+     */
+    public boolean esAmbiguo=false;
+
+    /**
+     * Nos indica si es que se pudo obtener una derivacion,
+     * es decir si la Cadena de entrada pertenece al Lenguaje.
+     */
+    public boolean solucion=true;
 
     /**
      * Constructor de la clase que inicializa las variables necesarias.
