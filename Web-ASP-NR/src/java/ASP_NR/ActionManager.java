@@ -82,7 +82,7 @@ public class ActionManager extends HttpServlet {
             entrada = entrada.trim() + " $";
             analizador = this.analizar(entrada.trim(), grammar);
         } catch (Exception e) {
-            request.setAttribute("error", "OCURRIO UN ERROR DESCONOCIDO\n");
+            request.setAttribute("error", "true");
             request.setAttribute("exception", e);
         }
         request.setAttribute("analizador", analizador);

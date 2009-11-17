@@ -1,3 +1,8 @@
+<%--
+    Document   : index
+    Created on : 12/11/2009, 05:10:40 PM
+    Author     : Usuario
+--%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
@@ -80,7 +85,7 @@
                                         <td align="center"><input type="text" name="entrada" size="60"></td>
                                     </tr>
                                     <tr class="odd">
-                                        <td >Ingrese la Gramática<br>a utilizar</td>
+                                        <td valign="middle">Ingrese la Gramática<br>a utilizar</td>
                                         <td>
                                             <textarea name="gramatica" cols="45" rows="15"></textarea>
                                         </td>

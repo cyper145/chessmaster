@@ -30,7 +30,7 @@ public class Main {
             anal.setTablaHash(producciones);
             anal.CalcularPrimeros();
             anal.CalcularSiguientes();
-            anal.imprimirConjuntosPrimeros();
+            anal.imprimirNoTerminales();
             anal.hacerTablaASP();
             anal.imprimirTablaASP();
             String entrada = "id + id * id $";

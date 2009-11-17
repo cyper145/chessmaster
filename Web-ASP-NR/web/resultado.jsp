@@ -183,7 +183,7 @@
             out.println("</center>");
         }else{
             out.println("<center><h2>ERROR</h2></center>");
-            out.println("<center><h3>" + error + "</h3></center>");
+            out.println("<center><h3>Ha ocurrido un error!!!</h3></center>");
             //Impresion del error.
             Exception ex = (Exception) request.getAttribute("exception");
             out.println("<br>");
@@ -195,6 +195,7 @@
             out.println("</tbody>");
             out.println("</table>");
         }
+        out.println("<br><center><input type=\"button\" name=\"inicio\" value=\"Ir al Inicio\" onclick=\"location.href = 'index.jsp'\"></center>");
                             %>
 
                         </form>
